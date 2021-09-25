@@ -78,7 +78,18 @@ export default function SignUp() {
                             })
                         }
                         onSubmit={(values) => {
-                            console.log(JSON.stringify(values))
+                            const newUser = {user:{
+                                ...values}
+                            }
+                            fetch('http://localhost:3000/sign_up',{
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(newUser)
+                            })
+                            .then(r=>r.json())
+                            .then(data=>console.log(data))
                         }}>
                         {({ errors, touched, values, handleSubmit }) => (
                             <Form>

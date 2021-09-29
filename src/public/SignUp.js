@@ -88,7 +88,9 @@ export default function SignUp() {
                                 },
                                 body: JSON.stringify(newUser)
                             })
-                            .then(r=>r.json())
+                            .then(r=>{
+                                localStorage.setItem("token", r.headers.get("Authorization"));
+                                return r.json()})
                             .then(data=>console.log(data))
                         }}>
                         {({ errors, touched, values, handleSubmit }) => (

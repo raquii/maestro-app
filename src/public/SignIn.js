@@ -29,7 +29,9 @@ export default function SignIn() {
                 "Content-Type": "application/json"
             },
             body:JSON.stringify(signInObj)
-        }).then(r=>r.json())
+        }).then(r=>{
+            localStorage.setItem("token", r.headers.get("Authorization"));
+            return r.json()})
         .then(data=>console.log(data))
     };
 

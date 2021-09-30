@@ -18,9 +18,20 @@ export const api = createApi({
                 method: 'DELETE',
             }),
         }),
+        signup: builder.mutation({
+            query: (credentials) => ({
+                url: "sign_up",
+                method: 'POST',
+                body: credentials,
+            }),
+        }),
         isLoggedIn: builder.mutation({
             query: () => ({
                 url: 'me',
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: localStorage.getItem("token"),
+                },
             })
         }),
         students: builder.mutation({

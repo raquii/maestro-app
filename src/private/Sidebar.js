@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import GroupsIcon from '@mui/icons-material/Groups';
 import EventIcon from '@mui/icons-material/Event';
-import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
+import MoneyIcon from '@mui/icons-material/MonetizationOnOutlined';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { styled, useTheme } from '@mui/material/styles';
@@ -132,7 +132,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <AppBar position="fixed" open={open}  >
+            <AppBar position="absolute" open={open}  >
                 <Toolbar sx={{ justifyContent: 'space-between', overflowX: 'auto' }}>
                     <IconButton
                         aria-label="open drawer"
@@ -237,7 +237,7 @@ export default function Sidebar() {
                     </ListItemButton>
                     <ListItemButton component={Link} to='/billing'>
                         <ListItemIcon>
-                            <MonetizationOnOutlinedIcon />
+                            <MoneyIcon />
                         </ListItemIcon>
                         <ListItemText>Billing</ListItemText>
                     </ListItemButton>

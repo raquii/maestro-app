@@ -24,8 +24,7 @@ export const slice = createSlice({
             })
             .addMatcher(api.endpoints.login.matchFulfilled, (state, action) => {
                 console.log('fulfilled-login', action);
-                const { id } = action.payload.data;
-                const { firstName, lastName, email, address, phone, role } = action.payload.data.attributes;
+                const { id, attributes:{ firstName, lastName, email, address, phone, role }} = action.payload.data;
                 Object.assign(state, { id, firstName, lastName, email, address, phone, role })
             })
             .addMatcher(api.endpoints.login.matchRejected, (state, action) => {

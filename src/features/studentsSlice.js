@@ -8,9 +8,7 @@ const initialState = {
 export const slice = createSlice({
     name: "students",
     initialState,
-    reducers: {
-
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addMatcher(api.endpoints.students.matchFulfilled, (state, action) => {

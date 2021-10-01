@@ -24,7 +24,9 @@ import Logout from '@mui/icons-material/Logout';
 import { styled, useTheme } from '@mui/material/styles';
 import { useState } from "react"
 import { Link } from "react-router-dom";
-
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
+import { useLogoutMutation } from "../features/api";
 
 
 const drawerWidth = 200;
@@ -99,7 +101,8 @@ export default function Sidebar() {
     const [open, setOpen] = useState(false);
     const [anchor, setAnchor] = useState(null);
 
-    const user = {firstName: 'Raquel', teacher: true}
+    const firstName = useSelector(state=>state.user.firstName)
+    const role = useSelector(state => state.user.role)
 
     const theme = useTheme();
 
@@ -115,9 +118,17 @@ export default function Sidebar() {
         setOpen(!open);
     };
 
-    const handleSignOut = () =>{
-        console.log('I want to sign out')
-    }
+    const [logout] = useLogoutMutation();
+    const history = useHistory();
+
+    const handleSignOut = async () =>{
+        try {
+            await logout()
+            history.push("/welcome")
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     return (
         <>
@@ -142,7 +153,7 @@ export default function Sidebar() {
                     </Typography>
                     <Tooltip title="Account Settings">
                         <IconButton onClick={handleClick} size='small' sx={{ ml: 2 }}>
-                            <Avatar sx={{ width: 32, height: 32 }}>{user.firstName.charAt(0)}</Avatar>
+                            <Avatar sx={{ width: 32, height: 32 }}>{firstName.charAt(0)}</Avatar>
                         </IconButton>
                     </Tooltip>
                     <Menu
@@ -212,7 +223,7 @@ export default function Sidebar() {
                         </ListItemIcon>
                         <ListItemText>Dashboard</ListItemText>
                     </ListItemButton>
-                    {user.teacher && <ListItemButton component={Link} to='/students'>
+                    {role === 'teacher' && <ListItemButton component={Link} to='/students'>
                         <ListItemIcon>
                             <GroupsIcon />
                         </ListItemIcon>

@@ -44,6 +44,10 @@ export const api = createApi({
         students: builder.mutation({
             query: () => ({
                 url: 'students',
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: localStorage.getItem("token"),
+                },
             })
         }),
     })

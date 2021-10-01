@@ -11,29 +11,33 @@ import {
     Typography
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import { useHistory } from 'react-router';
+import { useLoginMutation } from '../features/api';
 
 
 export default function SignIn() {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+    const history = useHistory();
+    const [login] = useLoginMutation();
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        const data = new FormData(e.currentTarget);
 
         const signInObj = {user: {
             email: data.get('email'),
             password: data.get('password'),
         }}
+        
+        try {
+            await login(signInObj).then(data=>localStorage.setItem("token", data.data.token))
+            history.push('/dashboard')
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-        fetch('http://localhost:3000/login', {
-            method: 'POST',
-            headers:{
-                "Content-Type": "application/json"
-            },
-            body:JSON.stringify(signInObj)
-        }).then(r=>{
-            localStorage.setItem("token", r.headers.get("Authorization"));
-            return r.json()})
-        .then(data=>console.log(data))
-    };
+
 
     return (
         <Container component="main" maxWidth="xs">

@@ -13,6 +13,7 @@ import './App.css';
 function App() {
   const [isLoggedIn] = useIsLoggedInMutation();
   const history = useHistory();
+  const email = useSelector(state => state.user.email);
 
   const checkForToken = useCallback(async () => {
     try {
@@ -20,7 +21,7 @@ function App() {
       history.push('/dashboard')
     } catch (error) {
       console.error()
-      history.push('/home')
+      history.push('/welcome')
     }
   }, [isLoggedIn, history]);
 
@@ -28,20 +29,14 @@ function App() {
     checkForToken()
   }, [checkForToken]);
 
-  // useEffect(() => {
-  //   fetch('http://localhost:3000/me', {
-  //     headers:{
-  //       "Content-Type": 'application/json',
-  //       Authorization: localStorage.getItem("token"),
-  //     }
-  //   })
-  //   .then(r=>r.json())
-  //   .then(data=>console.log(data))
-  // }, [])
-
   return (
     <div className="App">
-      <Private/>
+      {email.length > 0 ? 
+      <Private/> 
+      :
+      <Public/>
+      }
+      
       {/* <FullCalendar 
         plugins={[dayGridPlugin]}
         initialView="dayGridMonth"

@@ -11,11 +11,18 @@ export const api = createApi({
                 method: 'POST',
                 body: credentials,
             }),
+            transformResponse: (rawResult,meta) =>{
+                return {...rawResult, token: meta.response.headers.get("Authorization")}
+            }
         }),
         logout: builder.mutation({
             query: () => ({
                 url: "logout",
                 method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: localStorage.getItem("token"),
+                },
             }),
         }),
         signup: builder.mutation({

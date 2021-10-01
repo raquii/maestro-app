@@ -1,5 +1,3 @@
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
 import { useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux'
@@ -36,18 +34,6 @@ function App() {
       :
       <Public/>
       }
-      
-      {/* <FullCalendar 
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        weekends={false}
-        events={data} 
-        eventClick={handleEventClick}
-        nowIndicator={true}
-        slotMinTime="09:00"
-        slotMaxTime="21:00"
-        eventColor="#ee7d68"
-      /> */}
     </div>
   );
 }

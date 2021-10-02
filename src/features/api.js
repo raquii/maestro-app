@@ -31,6 +31,9 @@ export const api = createApi({
                 method: 'POST',
                 body: credentials,
             }),
+            transformResponse: (rawResult,meta) =>{
+                return {...rawResult, token: meta.response.headers.get("Authorization")}
+            }
         }),
         isLoggedIn: builder.mutation({
             query: () => ({
@@ -57,11 +60,13 @@ export const api = createApi({
 export const { 
     useLoginMutation, 
     useLogoutMutation, 
+    useSignupMutation,
     useIsLoggedInMutation, 
     } = api;
 
 export const { endpoints: { 
     login, 
     logout, 
+    signup,
     isLoggedIn, 
     } } = api;

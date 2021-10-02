@@ -36,8 +36,12 @@ export const slice = createSlice({
             })
             .addMatcher(api.endpoints.isLoggedIn.matchFulfilled, (state, action) => {
                 console.log('fulfilled-session recovered', action);
-                const { id } = action.payload.data;
-                const { firstName, lastName, email, address, phone, role } = action.payload.data.attributes;
+                const { id, attributes:{ firstName, lastName, email, address, phone, role }} = action.payload.data;
+                Object.assign(state, { id, firstName, lastName, email, address, phone, role })
+            })
+            .addMatcher(api.endpoints.signup.matchFulfilled, (state, action) => {
+                console.log('fulfilled-signed up', action);
+                const { id, attributes:{ firstName, lastName, email, address, phone, role }} = action.payload.data;
                 Object.assign(state, { id, firstName, lastName, email, address, phone, role })
             })
     }

@@ -2,23 +2,24 @@ import {
     Avatar,
     Box,
     Button,
-    Checkbox,
     Container,
-    FormControlLabel,
-    Link,
     Grid,
     TextField,
     Typography,
+    Alert,
     CircularProgress,
     Backdrop
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useHistory } from 'react-router';
 import { useLoginMutation } from '../features/api';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 
 export default function SignIn() {
     const history = useHistory();
+    const [errors, setErrors] = useState("")
     const [login, { isLoading }] = useLoginMutation();
 
     async function handleSubmit(e) {
@@ -33,13 +34,18 @@ export default function SignIn() {
         }
 
         try {
-            await login(signInObj).then(data => {if(data.get('remember')) return localStorage.setItem("token", data.data.token)})
-            history.push('/dashboard')
+            await login(signInObj)
+                .unwrap()
+                .then(data => {
+                    localStorage.setItem("token", data.data.token)
+                    history.push('/dashboard')
+                })
+                .catch(error => setErrors(error.data.error))
+
         } catch (error) {
             console.log(error)
         }
     }
-
 
     return (
         <Container component="main" maxWidth="xs">
@@ -84,11 +90,9 @@ export default function SignIn() {
                         id="password"
                         autoComplete="current-password"
                     />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                        name="remember"
-                    />
+                    {errors.length > 0 &&
+                        <Alert severity="error">{errors}</Alert>
+                    }
                     <Button
                         type="submit"
                         fullWidth
@@ -97,15 +101,15 @@ export default function SignIn() {
                     >
                         Sign In
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Link to='/welcome'>
                                 Forgot password?
                             </Link>
                         </Grid>
-                        <Grid item>
-                            <Link href="#" variant="body2">
-                                {"Don't have an account? Sign Up"}
+                        <Grid item xs={12}>
+                            <Link to='/signup'>
+                                Don't have an account? Sign Up
                             </Link>
                         </Grid>
                     </Grid>

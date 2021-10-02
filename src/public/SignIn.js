@@ -8,7 +8,9 @@ import {
     Link,
     Grid,
     TextField,
-    Typography
+    Typography,
+    CircularProgress,
+    Backdrop
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useHistory } from 'react-router';
@@ -17,20 +19,21 @@ import { useLoginMutation } from '../features/api';
 
 export default function SignIn() {
     const history = useHistory();
-    const [login] = useLoginMutation();
+    const [login, { isLoading }] = useLoginMutation();
 
     async function handleSubmit(e) {
         e.preventDefault();
 
         const data = new FormData(e.currentTarget);
+        const signInObj = {
+            user: {
+                email: data.get('email'),
+                password: data.get('password'),
+            }
+        }
 
-        const signInObj = {user: {
-            email: data.get('email'),
-            password: data.get('password'),
-        }}
-        
         try {
-            await login(signInObj).then(data=>localStorage.setItem("token", data.data.token))
+            await login(signInObj).then(data => {if(data.get('remember')) return localStorage.setItem("token", data.data.token)})
             history.push('/dashboard')
         } catch (error) {
             console.log(error)
@@ -38,9 +41,14 @@ export default function SignIn() {
     }
 
 
-
     return (
         <Container component="main" maxWidth="xs">
+            <Backdrop
+                sx={{ color: '#fff', zIndex: 10 }}
+                open={isLoading}
+            >
+                <CircularProgress />
+            </Backdrop>
             <Box
                 sx={{
                     marginTop: 8,
@@ -79,6 +87,7 @@ export default function SignIn() {
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
+                        name="remember"
                     />
                     <Button
                         type="submit"

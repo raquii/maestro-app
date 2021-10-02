@@ -10,22 +10,41 @@ import {
     InputAdornment,
     Typography,
     Container,
-    IconButton
+    IconButton,
+    Backdrop,
+    CircularProgress,
+    Alert
 } from '@mui/material';
 import { TextField } from 'formik-material-ui';
 import { Formik, Form, Field } from 'formik';
 import * as yup from 'yup';
 import { useState } from 'react';
 
+import { useSignupMutation } from '../features/api';
+import { useHistory } from 'react-router';
+
+
 export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
+    const [responseErrors, setResponseErrors] = useState([]);
+    const [signup, { isLoading }] = useSignupMutation();
+
+    const history = useHistory();
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
-    }; 
+    };
+
+    const renderedErrors = responseErrors.map(error => <Alert key={error} severity="error">{error}</Alert>)
 
     return (
         <Container component="main" maxWidth="xs">
+            <Backdrop
+                sx={{ color: '#fff', zIndex: 10 }}
+                open={isLoading}
+            >
+                <CircularProgress />
+            </Backdrop>
             <Box
                 sx={{
                     marginTop: 8,
@@ -54,13 +73,13 @@ export default function SignUp() {
                                 firstName: yup.string()
                                     .min(2, 'First name should be at least 2 characters')
                                     .max(50, 'First name should be less than 50 characters')
-                                    .matches(/([^<>@{}[\]!#$%^&*()=+?:;|0-9])+/)
+                                    .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
                                     .trim()
                                     .required('Required'),
                                 lastName: yup.string()
                                     .min(2, 'First name should be at least 2 characters')
                                     .max(50, 'First name should be less than 50 characters')
-                                    .matches(/([^<>@{}[\]!#$%^&*()=+?:;|0-9])+/)
+                                    .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
                                     .trim()
                                     .required('Required'),
                                 email: yup.string()
@@ -77,24 +96,25 @@ export default function SignUp() {
                                     .required('Password is required'),
                             })
                         }
-                        onSubmit={(values) => {
-                            const newUser = {user:{
-                                ...values}
+                        onSubmit={async (values) => {
+                            const newUser = {
+                                user: { ...values }
                             }
-                            fetch('http://localhost:3000/sign_up',{
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(newUser)
-                            })
-                            .then(r=>{
-                                localStorage.setItem("token", r.headers.get("Authorization"));
-                                return r.json()})
-                            .then(data=>console.log(data))
+
+                            try {
+                                await signup(newUser)
+                                    .unwrap()
+                                    .then(data => {
+                                        localStorage.setItem("token", data.token)
+                                        history.push('/dashboard')
+                                    })
+                                    .catch(error => setResponseErrors(error.data.errors))
+                            } catch (error) {
+                                console.log(error)
+                            }
                         }}>
                         {({ errors, touched, values, handleSubmit }) => (
-                            <Form>
+                            <Form autoComplete="off">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
                                         <Field
@@ -120,17 +140,16 @@ export default function SignUp() {
                                     <Grid item xs={12}>
                                         <Field
                                             fullWidth
-                                            
                                             component={TextField}
                                             variant="outlined"
-                                            id="new-email"
+                                            id="email"
                                             name="email"
                                             label="Email"
                                             type="email"
                                             value={values.email}
                                             error={touched.email && Boolean(errors.email)}
                                             helperText={touched.email && errors.email}
-                                            
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -169,11 +188,22 @@ export default function SignUp() {
                                             helperText={touched.passwordConfirmation && errors.passwordConfirmation}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <Button color="primary" variant="contained" type="submit" onSubmit={handleSubmit}>
+                                    {responseErrors.length > 0 &&
+                                        <Grid item xs={12}>
+                                            {renderedErrors}
+                                        </Grid>
+                                    }
+                                    <Grid item xs={12}>
+                                        <Button
+                                            fullWidth
+                                            color="primary"
+                                            variant="contained"
+                                            type="submit"
+                                            onSubmit={handleSubmit}>
                                             Submit
                                         </Button>
                                     </Grid>
+
                                 </Grid>
                             </Form>
                         )}

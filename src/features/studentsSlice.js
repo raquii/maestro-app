@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "./api";
 
-const initialState = {
-    students: []
-};
+const initialState = [];
 
 export const slice = createSlice({
     name: "students",
@@ -12,7 +10,8 @@ export const slice = createSlice({
     extraReducers: (builder) => {
         builder
             .addMatcher(api.endpoints.students.matchFulfilled, (state, action) => {
-                console.log('fulfilled-login', action);
+                console.log('fulfilled-students', action);
+                return state = action.payload.data
             })
             .addMatcher(api.endpoints.logout.matchFulfilled, (state) => {
                 console.log('fulfilled-logout', state);

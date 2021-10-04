@@ -62,11 +62,13 @@ export const {
     useLogoutMutation, 
     useSignupMutation,
     useIsLoggedInMutation, 
+    useStudentsMutation
     } = api;
 
 export const { endpoints: { 
     login, 
     logout, 
     signup,
-    isLoggedIn, 
+    isLoggedIn,
+    students
     } } = api;

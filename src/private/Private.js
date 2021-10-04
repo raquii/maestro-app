@@ -24,7 +24,6 @@ export default function Private() {
                     mt: 8
                 }} 
             >
-                {/* <Toolbar /> */}
                 <Switch>
                     <Route path='/dashboard'>
                         <Dashboard />
@@ -44,6 +43,7 @@ export default function Private() {
                     <Route path='/profile'>
                         <Profile />
                     </Route>
+
                 </Switch>
             </Box>
         </Box>

@@ -37,7 +37,8 @@ export default function SignIn() {
             await login(signInObj)
                 .unwrap()
                 .then(data => {
-                    localStorage.setItem("token", data.data.token)
+                    console.log(data)
+                    localStorage.setItem("token", data.token)
                     history.push('/dashboard')
                 })
                 .catch(error => setErrors(error.data.error))

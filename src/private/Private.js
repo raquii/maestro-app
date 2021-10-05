@@ -1,5 +1,5 @@
 import { Route, Switch } from "react-router";
-import { Box, Toolbar } from "@mui/material";
+import { Box } from "@mui/material";
 
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard"

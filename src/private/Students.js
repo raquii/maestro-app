@@ -10,11 +10,13 @@ import PageHeader from "./components/PageHeader"
 import StudentGrid from "./students/StudentGrid";
 import StudentToolbar from "./students/StudentToolbar";
 import NewStudentForm from "./students/NewStudentForm";
+import EmailDialogue from "./students/EmailDialogue";
 
 
 export default function Students() {
     const [search, setSearch] = useState("")
     const [view, setView] = useState('')
+    const [open, setOpen] = useState(true)
     const match = useRouteMatch();
 
     const [fetchStudents] = useStudentsMutation();
@@ -31,17 +33,22 @@ export default function Students() {
         getStudents()
     }, [])
 
-
+    function handleClose(){
+        setOpen(false)
+    }
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-
-
+            <EmailDialogue
+                open={open}
+                handleClose={handleClose}
+                />
             <Switch>
                 <Route path={`${match.path}/new-student`}>
                     <NewStudentForm />
                 </Route>
                 <Route path="/">
+
                     <PageHeader
                         icon={<GroupsIcon fontSize="large" sx={{ mr: 1 }} />}
                         page="Students"

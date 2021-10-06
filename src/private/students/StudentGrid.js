@@ -77,7 +77,7 @@ const columns = [
         hide: true
     },
     {
-        field: "makeupCredits",
+        field: "makeUpCredits",
         headerName: 'Make-Up Credits',
         hide: false
     },

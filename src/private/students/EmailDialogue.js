@@ -116,7 +116,6 @@ export default function EmailDialogue({ settings, handleClose, selected }) {
                 </Button>
                 <Button
                     onClick={() => console.log('send')}
-                    autoFocus
                     variant='contained'
                 >
                     Send

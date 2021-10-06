@@ -1,0 +1,25 @@
+
+.draft-editor {
+    border: 1px solid rgba(0, 0, 0, 0.23) ;
+    padding: 5px;
+    border-radius: 6px;
+    min-height: 200px;
+}
+
+.draft-editor:hover{
+    border-color: rgba(0, 0, 0, 0.87);
+}
+.draft-editor:focus-within{
+    border-color: rgba(0, 0, 0, 0.87);
+}
+
+.draft-toolbar {
+    border: 1px solid #e0f7fa ;
+    padding: 5px;
+    border-radius: 6px;
+    background-color: #e0f7fa71;
+}
+
+.draft-toolbar div{
+    border-radius: 6px;
+}

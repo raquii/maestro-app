@@ -83,9 +83,9 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                     component={Link}
                     to={`${match.url}/new-student`}
                     sx={{
-                        'border-top-right-radius': 0,
-                        'border-bottom-right-radius': 0,
-                        'border-right-color': 'transparent'
+                        borderTopRightRadius: 0,
+                        borderBottomRightRadius: 0,
+                        borderRightColor: 'transparent'
                     }}>
                     <AddIcon color="secondary" />
                     Add
@@ -99,8 +99,8 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                     aria-expanded={popover.menu === 1 ? 'true' : undefined}
                     variant={popover.menu === 1 ? "contained" : "outlined"}
                     sx={{
-                        'border-top-left-radius': 0,
-                        'border-bottom-left-radius': 0,
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
                         ml: 0,
                     }}
                     size='small'

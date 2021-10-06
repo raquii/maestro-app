@@ -62,7 +62,7 @@ const ShowButton = styled(Button)(({ theme }) => ({
     }
 }));
 
-export default function StudentToolbar({ match, search, setSearch, view, setView, setEmailRecipients }) {
+export default function StudentToolbar({ match, search, setSearch, view, setView, setEmailRecipients, handleConfirmationDialogues }) {
     //allows all popovers to be controlled by single piece of state
     const [popover, setPopover] = useState({
         anchor: null,
@@ -191,8 +191,8 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         <MenuItem onClick={() => handleEmailClick(2)}>Email Selected Parents</MenuItem>
                         <MenuItem onClick={() => handleEmailClick(3)}>Email Selected Students and Parents</MenuItem>
                         <Divider />
-                        <MenuItem>Send Login Email to Students</MenuItem>
-                        <MenuItem>Send Login Email to Parents</MenuItem>
+                        <MenuItem id='loginEmailsStudents' onClick={handleConfirmationDialogues}>Send Login Email to Students</MenuItem>
+                        <MenuItem id='loginEmailsParents' onClick={handleConfirmationDialogues}>Send Login Email to Parents</MenuItem>
                     </MenuList>
                 }
                 {popover.menu === 2 &&
@@ -201,8 +201,8 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         role='listbox'
                         autoFocusItem={popover.anchor !== null}
                     >
-                        <MenuItem>Reset Make-Up Credits</MenuItem>
-                        <MenuItem>Delete Selected Students</MenuItem>
+                        <MenuItem id='resetMUC' onClick={handleConfirmationDialogues} >Reset Make-Up Credits</MenuItem>
+                        <MenuItem id='deleteStudents' onClick={handleConfirmationDialogues}>Delete Selected Students</MenuItem>
                         <Divider />
                         <MenuItem>Set Status to Active</MenuItem>
                         <MenuItem>Set Status to Trial</MenuItem>

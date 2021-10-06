@@ -9,24 +9,62 @@ import StudentGrid from "./students/StudentGrid";
 import StudentToolbar from "./students/StudentToolbar";
 import NewStudentForm from "./students/NewStudentForm";
 import EmailDialogue from "./students/EmailDialogue";
+import { ResetMakeUpCreditsConfirmation, LoginEmailConfirmation, DeleteSelectedConfirmation, NoSelectedStudents } from "./students/ConfirmationModals";
 
 
 export default function Students() {
     const [search, setSearch] = useState("")
     const [view, setView] = useState('')
-    
     const [emailDialogue, setEmailDialogue] = useState({
-        open:false, 
-        selectedStudents: false, 
+        open: false,
+        selectedStudents: false,
         selectedParents: false
     })
-    console.log('emailDialogue:', emailDialogue)
     const [selection, setSelection] = useState([]);
+    const [displayConfirmation, setDisplayConfirmation] = useState({
+        noSelection: false,
+        makeups: false,
+        delete: false,
+        loginEmail: {display: false, to:""}
+    })
+
     const match = useRouteMatch();
 
-    function toggleShowEmail(){
-        setEmailDialogue((state=>({...state, open: !state.open, selectedStudents: false, 
-            selectedParents: false})))
+    function toggleShowEmail() {
+        setEmailDialogue((state => ({
+            ...state, open: !state.open, selectedStudents: false,
+            selectedParents: false
+        })))
+    }
+
+    function handleConfirmationDialogues(e){
+        const type = selection.length > 0 ? e.target.id : 'noSelection'
+        switch (type) {
+            case 'noSelection':
+                setDisplayConfirmation(state=>({...state, noSelection:true}))
+            break;
+            case 'loginEmailsStudents':
+                setDisplayConfirmation(state=>({...state, loginEmail:{display:true, to:'students'}}))
+            break;
+            case 'loginEmailsParents':
+                setDisplayConfirmation(state=>({...state, loginEmail:{display:true, to:'parents'}}))
+            break;
+            case 'resetMUC':
+                setDisplayConfirmation(state=>({...state, makeups:true}))
+            break;
+            case 'deleteStudents':
+                setDisplayConfirmation(state=>({...state, delete:true}))
+            break;
+        
+            default:
+                setDisplayConfirmation({
+                    noSelection: false,
+                    makeups: false,
+                    delete: false,
+                    loginEmail: {display: false, to:""}
+                })
+            break;
+        }
     }
 
     return (
@@ -37,7 +75,27 @@ export default function Students() {
                 includeParents={emailDialogue.selectedParents}
                 includeStudents={emailDialogue.selectedStudents}
                 selected={selection}
-                />
+            />
+            <NoSelectedStudents
+                open={displayConfirmation.noSelection}
+                handleClose={setDisplayConfirmation}
+            />
+            <ResetMakeUpCreditsConfirmation
+                open={displayConfirmation.makeups}
+                handleClose={handleConfirmationDialogues}
+                selected={selection}
+            />
+            <LoginEmailConfirmation
+                open={displayConfirmation.loginEmail.display}
+                handleClose={handleConfirmationDialogues}
+                selected={selection}
+                to={displayConfirmation.loginEmail.to}
+            />
+            {displayConfirmation.delete && <DeleteSelectedConfirmation
+                open={displayConfirmation.delete}
+                handleClose={handleConfirmationDialogues}
+                selected={selection}
+            />}
             <Switch>
                 <Route path={`${match.path}/new-student`}>
                     <NewStudentForm />
@@ -64,6 +122,7 @@ export default function Students() {
                                     view={view}
                                     setView={setView}
                                     setEmailRecipients={setEmailDialogue}
+                                    handleConfirmationDialogues={handleConfirmationDialogues}
                                 />
                             </Paper>
                         </Grid>

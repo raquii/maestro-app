@@ -44,7 +44,7 @@ export const api = createApi({
                 },
             })
         }),
-        students: builder.mutation({
+        students: builder.query({
             query: () => ({
                 url: 'students',
                 headers: {
@@ -62,7 +62,7 @@ export const {
     useLogoutMutation, 
     useSignupMutation,
     useIsLoggedInMutation, 
-    useStudentsMutation
+    useStudentsQuery
     } = api;
 
 export const { endpoints: { 

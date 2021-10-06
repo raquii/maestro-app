@@ -57,12 +57,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const ShowButton = styled(Button)(({ theme }) => ({
     '&.Mui-disabled, &:disabled': {
         color: theme.palette.primary.main,
-        borderColor: alpha(theme.palette.primary.main,.5),
-        backgroundColor:theme.palette.background.default,
+        borderColor: alpha(theme.palette.primary.main, .5),
+        backgroundColor: theme.palette.background.default,
     }
 }));
 
-export default function StudentToolbar({ match, search, setSearch, view, setView }) {
+export default function StudentToolbar({ match, search, setSearch, view, setView, setEmailRecipients }) {
     //allows all popovers to be controlled by single piece of state
     const [popover, setPopover] = useState({
         anchor: null,
@@ -70,13 +70,56 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
     })
 
     function handleViewMenuClick(e) {
-        setPopover({anchor: null, menu: -1})
+        setPopover({ anchor: null, menu: -1 })
         setView(e.target.id)
+    }
+
+    function handleEmailClick(n) {
+        switch (n) {
+            case 0:
+                setEmailRecipients((state => ({
+                    ...state,
+                    open: true,
+                    selectedStudents: false,
+                    selectedParents: false
+                })
+                ))
+                break;
+            case 1:
+                setEmailRecipients((state => ({
+                    ...state,
+                    open: true,
+                    selectedStudents: true,
+                    selectedParents: false
+                })
+                ))
+                break;
+            case 2:
+                setEmailRecipients((state => ({
+                    ...state,
+                    open: true,
+                    selectedStudents: false,
+                    selectedParents: true
+                })
+                ))
+                break;
+            case 3:
+                setEmailRecipients((state => ({
+                    ...state,
+                    open: true,
+                    selectedStudents: true,
+                    selectedParents: true
+                })
+                ))
+                break;
+            default:
+                break;
+        }
     }
 
     return (
         <>
-            <ButtonGroup sx={{marginBottom: { xs: 1, sm: 0 }}}>
+            <ButtonGroup sx={{ marginBottom: { xs: 1, sm: 0 } }}>
                 <Button
                     aria-label="add student"
                     size='small'
@@ -143,10 +186,10 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         role='listbox'
                         autoFocusItem={popover.anchor !== null}
                     >
-                        <MenuItem>New Email</MenuItem>
-                        <MenuItem>Email Selected Students</MenuItem>
-                        <MenuItem>Email Selected Parents</MenuItem>
-                        <MenuItem>Email Selected Students and Parents</MenuItem>
+                        <MenuItem onClick={() => handleEmailClick(0)}>New Email</MenuItem>
+                        <MenuItem onClick={() => handleEmailClick(1)}>Email Selected Students</MenuItem>
+                        <MenuItem onClick={() => handleEmailClick(2)}>Email Selected Parents</MenuItem>
+                        <MenuItem onClick={() => handleEmailClick(3)}>Email Selected Students and Parents</MenuItem>
                         <Divider />
                         <MenuItem>Send Login Email to Students</MenuItem>
                         <MenuItem>Send Login Email to Parents</MenuItem>

@@ -1,10 +1,8 @@
 import { Container, Grid, Paper } from "@mui/material"
 import GroupsIcon from "@mui/icons-material/Groups"
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Switch, Route, useRouteMatch } from "react-router-dom";
-
-import { useStudentsMutation } from "../features/api";
 
 import PageHeader from "./components/PageHeader"
 import StudentGrid from "./students/StudentGrid";
@@ -16,32 +14,29 @@ import EmailDialogue from "./students/EmailDialogue";
 export default function Students() {
     const [search, setSearch] = useState("")
     const [view, setView] = useState('')
-    const [open, setOpen] = useState(true)
+    
+    const [emailDialogue, setEmailDialogue] = useState({
+        open:false, 
+        selectedStudents: false, 
+        selectedParents: false
+    })
+    console.log('emailDialogue:', emailDialogue)
+    const [selection, setSelection] = useState([]);
     const match = useRouteMatch();
 
-    const [fetchStudents] = useStudentsMutation();
-
-    const getStudents = async () => {
-        try {
-            await fetchStudents()
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    useEffect(() => {
-        getStudents()
-    }, [])
-
-    function handleClose(){
-        setOpen(false)
+    function toggleShowEmail(){
+        setEmailDialogue((state=>({...state, open: !state.open, selectedStudents: false, 
+            selectedParents: false})))
     }
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <EmailDialogue
-                open={open}
-                handleClose={handleClose}
+                settings={emailDialogue}
+                handleClose={toggleShowEmail}
+                includeParents={emailDialogue.selectedParents}
+                includeStudents={emailDialogue.selectedStudents}
+                selected={selection}
                 />
             <Switch>
                 <Route path={`${match.path}/new-student`}>
@@ -68,6 +63,7 @@ export default function Students() {
                                     setSearch={setSearch}
                                     view={view}
                                     setView={setView}
+                                    setEmailRecipients={setEmailDialogue}
                                 />
                             </Paper>
                         </Grid>
@@ -79,6 +75,7 @@ export default function Students() {
                                 <StudentGrid
                                     search={search}
                                     view={view}
+                                    setSelection={setSelection}
                                 />
                             </Paper>
                         </Grid>

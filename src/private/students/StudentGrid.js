@@ -3,6 +3,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import { useSelector } from 'react-redux'
 import { Tooltip } from '@mui/material'
 
+import { useStudentsQuery } from '../../features/api'
+
 const columns = [
     {
         field: 'actions',
@@ -92,9 +94,13 @@ function editUser(id) {
     // console.log('edit', id)
 }
 
-export default function StudentGrid({ search, view }) {
-    const students = useSelector(state => state.students)
 
+
+export default function StudentGrid({ search, view, setSelection }) {
+    const {error, isLoading} = useStudentsQuery();
+
+    const students = useSelector(state => state.students)
+    
     const escapeRegExp = (value) => {
         return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     }
@@ -103,17 +109,19 @@ export default function StudentGrid({ search, view }) {
 
     function CustomToolbar() {
         return (
-          <GridToolbarContainer>
-            <GridToolbarColumnsButton />
-            <GridToolbarDensitySelector />
-            <GridToolbarExport />
-          </GridToolbarContainer>
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarDensitySelector />
+                <GridToolbarExport />
+            </GridToolbarContainer>
         );
     }
 
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
+                error={error}
+                loading={isLoading}
                 rows={updatedRows}
                 columns={columns}
                 components={{
@@ -121,15 +129,21 @@ export default function StudentGrid({ search, view }) {
                 }}
                 filterModel={{
                     items: [
-                      { 
-                        columnField: 'status', 
-                        operatorValue: 'equals', 
-                        value: view
+                        {
+                            columnField: 'status',
+                            operatorValue: 'equals',
+                            value: view
                         },
                     ],
                 }}
                 checkboxSelection
                 disableSelectionOnClick
+                onSelectionModelChange={(ids) => {
+                    const selectedIds = new Set(ids);
+                    const selectedRows = updatedRows.filter(r=>selectedIds.has(r.id.toString()))
+                    setSelection(selectedRows)
+                }}
+                
                 hideFooter
             />
         </div>

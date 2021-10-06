@@ -20,10 +20,12 @@ export const slice = createSlice({
                         address: s.attributes.address,
                         adult: s.attributes.studentProfile.data.attributes.adult,
                         grade: s.attributes.studentProfile.data.attributes.grade,
-                        status: s.attributes.studentProfile.data.status,
+                        status: s.attributes.studentProfile.data.attributes.status,
+                        gender: s.attributes.studentProfile.data.attributes.gender,
                         defaultLessonPrice: s.attributes.studentProfile.data.attributes.defaultLessonPrice,
                         defaultLessonDuration: s.attributes.studentProfile.data.attributes.defaultLessonDuration,
                         makeUpCredits: s.attributes.studentProfile.data.attributes.makeUpCredits,
+                        birthday: s.attributes.studentProfile.data.attributes.birthday,
                         profileId: s.attributes.studentProfile.data.id,
                     
                 }))

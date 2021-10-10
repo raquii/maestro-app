@@ -11,7 +11,6 @@ export const api = createApi({
             return headers
         },
     }),
-    tagTypes: ['User', 'Student'],
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (credentials) => ({
@@ -48,7 +47,6 @@ export const api = createApi({
             query: () => ({
                 url: 'students',
             }),
-            providesTags: ['Student']
         }),
         updateStudents: builder.mutation({
             query: (students) => ({
@@ -56,7 +54,13 @@ export const api = createApi({
                 method: 'PUT',
                 body: students,
             }),
-
+        }),
+        updateSettings: builder.mutation({
+            query: (id, preference) => ({
+                url: `preferences/${id}`,
+                method: 'PATCH',
+                body: preference
+            })
         })
     })
 })
@@ -68,7 +72,8 @@ export const {
     useSignupMutation,
     useIsLoggedInMutation, 
     useFetchStudentsQuery,
-    useUpdateStudentsMutation
+    useUpdateStudentsMutation,
+    useUpdateSettingsMutation
     } = api;
 
 export const { endpoints: { 
@@ -77,5 +82,6 @@ export const { endpoints: {
     signup,
     isLoggedIn,
     fetchStudents,
-    updateStudents
+    updateStudents,
+    updateSettings
     } } = api;

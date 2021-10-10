@@ -35,7 +35,7 @@ export const slice = createSlice({
             })
             .addMatcher(api.endpoints.updateSettings.matchFulfilled, (state, action) => {
                 console.log('fulfilled: settings', action,);
-                
+                return action.payload.data
             })
             .addMatcher(api.endpoints.logout.matchFulfilled, (state) => {
                 console.log('fulfilled: logout - settings', state);

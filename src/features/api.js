@@ -56,7 +56,7 @@ export const api = createApi({
             }),
         }),
         updateSettings: builder.mutation({
-            query: (id, preference) => ({
+            query: ({id, ...preference}) => ({
                 url: `preferences/${id}`,
                 method: 'PATCH',
                 body: preference

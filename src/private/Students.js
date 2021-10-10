@@ -1,6 +1,5 @@
 import { Container, Grid, Paper } from "@mui/material"
 import GroupsIcon from "@mui/icons-material/Groups"
-
 import { useState } from "react";
 import { Switch, Route, useRouteMatch } from "react-router-dom";
 
@@ -9,10 +8,17 @@ import StudentGrid from "./students/StudentGrid";
 import StudentToolbar from "./students/StudentToolbar";
 import NewStudentForm from "./students/NewStudentForm";
 import EmailDialogue from "./students/EmailDialogue";
-import { ResetMakeUpCreditsConfirmation, LoginEmailConfirmation, DeleteSelectedConfirmation, NoSelectedStudents } from "./students/ConfirmationModals";
+import {
+    ResetMakeUpCreditsConfirmation,
+    LoginEmailConfirmation,
+    DeleteSelectedConfirmation,
+    NoSelectedStudents
+} from "./students/ConfirmationModals";
+import { useUpdateStudentsMutation } from "../features/api";
 
 
 export default function Students() {
+    const [updateStudents] = useUpdateStudentsMutation();
     const [search, setSearch] = useState("")
     const [view, setView] = useState('')
     const [emailDialogue, setEmailDialogue] = useState({
@@ -25,7 +31,7 @@ export default function Students() {
         noSelection: false,
         makeups: false,
         delete: false,
-        loginEmail: {display: false, to:""}
+        loginEmail: { display: false, to: "" }
     })
 
     const match = useRouteMatch();
@@ -37,60 +43,78 @@ export default function Students() {
         })))
     }
 
-    function handleConfirmationDialogues(e){
+    function handleConfirmationDialogues(e) {
         const type = selection.length > 0 ? e.target.id : 'noSelection'
         switch (type) {
             case 'noSelection':
-                setDisplayConfirmation(state=>({...state, noSelection:true}))
-            break;
+                setDisplayConfirmation(state => ({ ...state, noSelection: true }))
+                break;
             case 'loginEmailsStudents':
-                setDisplayConfirmation(state=>({...state, loginEmail:{display:true, to:'students'}}))
-            break;
+                setDisplayConfirmation(state => ({ ...state, loginEmail: { display: true, to: 'students' } }))
+                break;
             case 'loginEmailsParents':
-                setDisplayConfirmation(state=>({...state, loginEmail:{display:true, to:'parents'}}))
-            break;
+                setDisplayConfirmation(state => ({ ...state, loginEmail: { display: true, to: 'parents' } }))
+                break;
             case 'resetMUC':
-                setDisplayConfirmation(state=>({...state, makeups:true}))
-            break;
+                setDisplayConfirmation(state => ({ ...state, makeups: true }))
+                break;
             case 'deleteStudents':
-                setDisplayConfirmation(state=>({...state, delete:true}))
-            break;
-        
+                setDisplayConfirmation(state => ({ ...state, delete: true }))
+                break;
+
             default:
                 setDisplayConfirmation({
                     noSelection: false,
                     makeups: false,
                     delete: false,
-                    loginEmail: {display: false, to:""}
+                    loginEmail: { display: false, to: "" }
                 })
-            break;
+                break;
+        }
+    }
+
+    async function handleStatusChange(newStatus){
+        console.log(selection, newStatus)
+        const studentsToUpdate = {ids: selection.map(s=>(s.id)), profileIds:selection.map(s=>(s.studentProfile.id)),status: newStatus }
+        // const studentsToUpdate = selection.map(s=>({...s, studentProfileAttributes:{...s.studentProfile, status: newStatus}}))
+        console.log(studentsToUpdate)
+        
+        if(selection.length === 0){
+            handleConfirmationDialogues()
+        }else{
+           try{ 
+               await updateStudents({students: studentsToUpdate}).unwrap()
+            }catch(err){
+                console.log(err)
+            }
+
         }
     }
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <EmailDialogue
+            {emailDialogue.open && <EmailDialogue
                 settings={emailDialogue}
                 handleClose={toggleShowEmail}
                 includeParents={emailDialogue.selectedParents}
                 includeStudents={emailDialogue.selectedStudents}
                 selected={selection}
-            />
+            />}
             <NoSelectedStudents
                 open={displayConfirmation.noSelection}
                 handleClose={setDisplayConfirmation}
             />
-            <ResetMakeUpCreditsConfirmation
+            {displayConfirmation.makeups && <ResetMakeUpCreditsConfirmation
                 open={displayConfirmation.makeups}
                 handleClose={handleConfirmationDialogues}
                 selected={selection}
-            />
-            <LoginEmailConfirmation
+            />}
+            {displayConfirmation.loginEmail.display && <LoginEmailConfirmation
                 open={displayConfirmation.loginEmail.display}
                 handleClose={handleConfirmationDialogues}
                 selected={selection}
                 to={displayConfirmation.loginEmail.to}
-            />
+            />}
             {displayConfirmation.delete && <DeleteSelectedConfirmation
                 open={displayConfirmation.delete}
                 handleClose={handleConfirmationDialogues}
@@ -123,12 +147,13 @@ export default function Students() {
                                     setView={setView}
                                     setEmailRecipients={setEmailDialogue}
                                     handleConfirmationDialogues={handleConfirmationDialogues}
-                                />
+                                    handleStatusChange={handleStatusChange}
+                               />
                             </Paper>
                         </Grid>
                         <Grid item xs={12}>
                             <Paper sx={{
-                                height: 400,
+                                height: 600,
                                 width: "100%"
                             }}>
                                 <StudentGrid

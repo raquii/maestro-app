@@ -33,9 +33,10 @@ export const slice = createSlice({
                 console.log('fulfilled: isLoggedIn - settings', action);
                 return action.payload.data.attributes.preferences.data
             })
-            // .addMatcher(api.endpoints.settings.matchFulfilled, (state, action) => {
-            //     console.log('fulfilled: settings', action,);
-            // })
+            .addMatcher(api.endpoints.updateSettings.matchFulfilled, (state, action) => {
+                console.log('fulfilled: settings', action,);
+                
+            })
             .addMatcher(api.endpoints.logout.matchFulfilled, (state) => {
                 console.log('fulfilled: logout - settings', state);
                 return initialState;

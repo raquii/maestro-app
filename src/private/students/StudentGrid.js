@@ -2,8 +2,8 @@ import { DataGrid, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarDe
 import EditIcon from '@mui/icons-material/Edit'
 import { useSelector } from 'react-redux'
 import { Tooltip } from '@mui/material'
-
-import { useStudentsQuery } from '../../features/api'
+import * as dayjs from 'dayjs'
+import { useFetchStudentsQuery } from '../../features/api'
 
 const columns = [
     {
@@ -34,22 +34,56 @@ const columns = [
     {
         field: "age",
         headerName: 'Age',
-        hide: true
+        hide: true,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.birthday){
+                let today = dayjs()
+                let birthday = dayjs(params.row.studentProfile.birthday)
+                result = today.diff(birthday, 'year')
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
     {
         field: "birthday",
         headerName: 'Birthday',
-        hide: true
+        hide: true,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.birthday){            
+                result = dayjs(params.row.studentProfile.birthday).format("MM-DD-YYYY")
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
     {
         field: "defaultLessonDuration",
         headerName: 'Lesson Duration',
-        hide: true
+        hide: true,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.defaultLessonDuration){            
+                result = params.row.studentProfile.defaultLessonDuration
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
     {
         field: "defaultLessonPrice",
         headerName: 'Default Price',
-        hide: true
+        hide: true,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.defaultLessonPrice){            
+                result = params.row.studentProfile.defaultLessonPrice
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
     {
         field: "email",
@@ -66,27 +100,60 @@ const columns = [
     {
         field: "family",
         headerName: 'Family',
-        hide: false
+        hide: true
     },
     {
         field: "gender",
         headerName: 'Gender',
-        hide: true
+        hide: true,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.gender){            
+                result = params.row.studentProfile.gender
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
     {
-        field: "groups",
-        headerName: 'Groups',
-        hide: true
+        field: "school",
+        headerName: 'School',
+        hide: true,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.school){            
+                result = params.row.studentProfile.school
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
+
     },
     {
         field: "makeUpCredits",
         headerName: 'Make-Up Credits',
-        hide: false
+        hide: false,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.makeUpCredits){            
+                result = params.row.studentProfile.makeUpCredits
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
     {
         field: "status",
         headerName: 'Status',
-        hide: false
+        hide: false,
+        valueGetter: (params)=>{
+            let result = ""
+            if(params.row.studentProfile.status){            
+                result = params.row.studentProfile.status
+            }
+            return result
+        },
+        sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
     },
 ]
 
@@ -97,7 +164,7 @@ function editUser(id) {
 
 
 export default function StudentGrid({ search, view, setSelection }) {
-    const {error, isLoading} = useStudentsQuery();
+    const { error, isLoading } = useFetchStudentsQuery(undefined, {selectFromResult: () => ({})});
 
     const students = useSelector(state => state.students)
     
@@ -118,35 +185,32 @@ export default function StudentGrid({ search, view, setSelection }) {
     }
 
     return (
-        <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-                error={error}
-                loading={isLoading}
-                rows={updatedRows}
-                columns={columns}
-                components={{
-                    Toolbar: CustomToolbar,
-                }}
-                filterModel={{
-                    items: [
-                        {
-                            columnField: 'status',
-                            operatorValue: 'equals',
-                            value: view
-                        },
-                    ],
-                }}
-                checkboxSelection
-                disableSelectionOnClick
-                onSelectionModelChange={(ids) => {
-                    const selectedIds = new Set(ids);
-                    const selectedRows = updatedRows.filter(r=>selectedIds.has(r.id.toString()))
-                    setSelection(selectedRows)
-                }}
-                
-                hideFooter
-            />
-        </div>
+        <DataGrid
+            error={error}
+            loading={isLoading}
+            rows={updatedRows}
+            columns={columns}
+            components={{
+                Toolbar: CustomToolbar,
+            }}
+            filterModel={{
+                items: [
+                    {
+                        columnField: 'status',
+                        operatorValue: 'equals',
+                        value: view
+                    },
+                ],
+            }}
+            checkboxSelection
+            disableSelectionOnClick
+            onSelectionModelChange={(ids) => {
+                const selectedIds = new Set(ids);
+                const selectedRows = updatedRows.filter(r => selectedIds.has(r.id.toString()))
+                setSelection(selectedRows)
+            }}
 
+            hideFooter
+        />
     )
 }

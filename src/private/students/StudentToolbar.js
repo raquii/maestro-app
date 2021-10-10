@@ -62,7 +62,7 @@ const ShowButton = styled(Button)(({ theme }) => ({
     }
 }));
 
-export default function StudentToolbar({ match, search, setSearch, view, setView, setEmailRecipients, handleConfirmationDialogues }) {
+export default function StudentToolbar({ match, search, setSearch, view, setView, setEmailRecipients, handleConfirmationDialogues, handleStatusChange }) {
     //allows all popovers to be controlled by single piece of state
     const [popover, setPopover] = useState({
         anchor: null,
@@ -204,11 +204,11 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         <MenuItem id='resetMUC' onClick={handleConfirmationDialogues} >Reset Make-Up Credits</MenuItem>
                         <MenuItem id='deleteStudents' onClick={handleConfirmationDialogues}>Delete Selected Students</MenuItem>
                         <Divider />
-                        <MenuItem>Set Status to Active</MenuItem>
-                        <MenuItem>Set Status to Trial</MenuItem>
-                        <MenuItem>Set Status to Inactive</MenuItem>
-                        <MenuItem>Set Status to Waiting</MenuItem>
-                        <MenuItem>Set Status to Lead</MenuItem>
+                        <MenuItem onClick={()=>handleStatusChange('active')}>Set Status to Active</MenuItem>
+                        <MenuItem onClick={()=>handleStatusChange('trial')}>Set Status to Trial</MenuItem>
+                        <MenuItem onClick={()=>handleStatusChange('inactive')}>Set Status to Inactive</MenuItem>
+                        <MenuItem onClick={()=>handleStatusChange('waiting')}>Set Status to Waiting</MenuItem>
+                        <MenuItem onClick={()=>handleStatusChange('lead')}>Set Status to Lead</MenuItem>
                     </MenuList>
                 }
                 {popover.menu === 3 &&

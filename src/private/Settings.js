@@ -85,7 +85,7 @@ export default function Settings() {
                 initialValues={settings}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
-                    const castValues = {id: id, ...validationSchema.cast(values)}
+                    const castValues = { id: id, ...validationSchema.cast(values) }
                     console.log(castValues)
                     updateSettings(castValues)
                 }}
@@ -101,10 +101,21 @@ export default function Settings() {
                                     <Divider />
                                 </Grid>
 
-                                <Grid item xs={5}>
-                                    Default Lesson Price
+                                <Grid container item xs={5}>
+                                    <Grid item>
+                                        <Typography variant="button" color="initial">
+                                            Default Lesson Price
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Used when creating new students.
+                                            <br />
+                                            You can always change the price for individual students.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={3}>
                                     <TextField
                                         id="defaultLessonPrice"
                                         name="defaultLessonPrice"
@@ -121,10 +132,22 @@ export default function Settings() {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={5}>
-                                    Default Lesson Duration
+
+                                <Grid item container xs={5}>
+                                    <Grid item>
+                                        <Typography variant="button" color="initial">
+                                            Default Lesson Duration
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <Typography variant="caption" color="initial">
+                                            Used when creating new events.
+                                            <br />
+                                            You can always change how long individual events are.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={3}>
                                     <TextField
                                         id="defaultLessonDuration"
                                         name="defaultLessonDuration"
@@ -134,21 +157,33 @@ export default function Settings() {
                                         error={touched.defaultLessonDuration && Boolean(errors.defaultLessonDuration)}
                                         helperText={touched.defaultLessonDuration && errors.defaultLessonDuration}
                                         onChange={handleChange}
-                                        InputProps={{
+                                        textAlign="right"
+                                        inputProps={{
                                             inputMode: 'numeric',
                                             pattern: '[0-9]*',
-                                            endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
-                                        }}
+                                         }}
+                                        InputProps={{endAdornment:<InputAdornment position="end">minutes</InputAdornment>}}
                                     />
                                 </Grid>
+
                                 <Grid item xs={5}>
-                                    Studio Location
+                                    <Grid item>
+                                        <Typography variant="button" color="initial">
+                                            Studio Location
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Visible to students and parents.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <TextField
                                         id="location"
                                         size="small"
                                         hiddenLabel
+                                        fullWidth
                                         multiline
                                         minRows={3}
                                         value={values.location}
@@ -157,8 +192,19 @@ export default function Settings() {
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item xs={5}>
-                                    Students Can Edit Their Profiles
+
+                                <Grid item container xs={5}>
+                                    <Grid item>
+                                        <Typography variant="button" color="initial">
+                                            Students Can Edit Their Profiles
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Allow students in your studio to edit their own profile information.
+                                        </Typography>
+                                    </Grid>
+
                                 </Grid>
                                 <Grid item xs={5}>
                                     <FormControl component="fieldset">
@@ -183,13 +229,23 @@ export default function Settings() {
                                     <Typography variant="h4" component="h2" gutterBottom color="primary">Cancellation Policies</Typography>
                                     <Divider />
                                 </Grid>
-                                <Grid item xs={5}>
-                                    Cancellation Policy Summary
+                                <Grid item container xs={5}>
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Cancellation Policy Summary
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            A typed summary of your cancellation and make-up policy, visible to students and parents.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={6}>
                                     <TextField
                                         id="cancellationPolicySummary"
                                         name="cancellationPolicySummary"
+                                        fullWidth
                                         hiddenLabel
                                         multiline
                                         minRows={3}
@@ -199,8 +255,17 @@ export default function Settings() {
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item xs={5}>
-                                    Allow Cancellations:
+                                <Grid item container xs={5}>
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Allow Cancellations
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Permit students to cancel via the app.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <FormControl component="fieldset">
@@ -215,12 +280,17 @@ export default function Settings() {
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
-                                {values.permitCancellations === 'true' &&
+                                {(values.permitCancellations === 'true' || values.permitCancellations === true) &&
                                     <>
-                                        <Grid item xs={5}>
-                                            Cancellation Deadline:
+                                        <Grid item container xs={5}>
+                                            <Grid item >
+                                                <Typography variant="button" color="initial">
+                                                    Cancellation Deadline
+                                                </Typography>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={5}>
+
+                                        <Grid item xs={3}>
                                             <TextField
                                                 id="cancellationDeadline"
                                                 name="cancellationDeadline"
@@ -239,9 +309,14 @@ export default function Settings() {
                                         </Grid>
                                     </>
                                 }
-                                <Grid item xs={5}>
-                                    Allow Make-Up Credits
+                                <Grid item container xs={5}>
+                                    <Grid item>
+                                        <Typography variant="button" color="initial">
+                                            Allow Make-Up Credits
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
+
                                 <Grid item xs={5}>
                                     <FormControl component="fieldset">
                                         <FormLabel component="legend"></FormLabel>
@@ -257,11 +332,20 @@ export default function Settings() {
 
                                     </FormControl>
                                 </Grid>
-                                {values.permitMakeUpCredits === 'true' && <>
-                                    <Grid item xs={5}>
-                                        Make-Up Credits Expire
+                                {(values.permitMakeUpCredits === 'true' || values.permitMakeUpCredits === true) && <>
+                                    <Grid item container xs={5}>
+                                        <Grid item >
+                                            <Typography variant="button" color="initial">
+                                                Expire Make-Up Credits
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="caption" color="initial">
+                                                Set maximum age for make-up credits.
+                                            </Typography>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={3}>
                                         <FormControl component="fieldset">
                                             <FormLabel component="legend"></FormLabel>
                                             <RadioGroup row
@@ -273,14 +357,17 @@ export default function Settings() {
                                                 <FormControlLabel value="true" control={<Radio />} label="Yes" />
                                                 <FormControlLabel value="false" control={<Radio />} label="No" />
                                             </RadioGroup>
-
                                         </FormControl>
                                     </Grid>
-                                    {values.expireMakeUpCredits === 'true' && <>
-                                        <Grid item xs={5}>
-                                            Maximum Age for Credits
+                                    {(values.expireMakeUpCredits === 'true' || values.expireMakeUpCredits === true) && <>
+                                        <Grid item container xs={2}>
+                                            <Grid item>
+                                                <Typography variant="button" color="initial">
+                                                    Make-Up Credit Lifespan
+                                                </Typography>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={5}>
+                                        <Grid item xs={2}>
                                             <TextField
                                                 id="maxCreditAge"
                                                 name="maxCreditAge"
@@ -298,10 +385,19 @@ export default function Settings() {
                                             />
                                         </Grid>
                                     </>}
-                                    <Grid item xs={5}>
-                                        Limit Total Make-Up Credits
+                                    <Grid item container xs={5}>
+                                        <Grid item >
+                                            <Typography variant="button" color="initial">
+                                                Limit Accrued Make-Up Credits
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="caption" color="initial">
+                                                Set a maximum allowance of accrued make-up credits.
+                                            </Typography>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={3}>
                                         <FormControl component="fieldset">
                                             <FormLabel component="legend"></FormLabel>
                                             <RadioGroup row
@@ -316,11 +412,15 @@ export default function Settings() {
 
                                         </FormControl>
                                     </Grid>
-                                    {values.limitTotalMakeUpCredits === 'true' && <>
-                                        <Grid item xs={5}>
-                                            Maximum Total Make-Up Credits
+                                    {(values.limitTotalMakeUpCredits === 'true' || values.limitTotalMakeUpCredits === true) && <>
+                                        <Grid item container xs={2}>
+                                            <Grid item >
+                                                <Typography variant="button" color="initial">
+                                                    Max Accrued Make-Up Credits
+                                                </Typography>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={5}>
+                                        <Grid item xs={2}>
                                             <TextField
                                                 id="maxTotalMakeUpCredits"
                                                 name="maxTotalMakeUpCredits"
@@ -338,8 +438,17 @@ export default function Settings() {
                                             />
                                         </Grid>
                                     </>}
-                                    <Grid item xs={5}>
-                                        Issue Make-Up Credits Automatically
+                                    <Grid item container xs={5}>
+                                        <Grid item >
+                                            <Typography variant="button" color="initial">
+                                                Issue Make-Up Credits Automatically
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="caption" color="initial">
+                                                If a student cancels before the <strong>cancellation deadline</strong>, a credit will automatically be issued.
+                                            </Typography>
+                                        </Grid>
                                     </Grid>
                                     <Grid item xs={5}>
                                         <FormControl component="fieldset">
@@ -365,11 +474,14 @@ export default function Settings() {
                                     <Typography variant="h4" component="h2" gutterBottom color="primary">Calendar Settings</Typography>
                                     <Divider />
                                 </Grid>
-                                <Grid item xs={5}>
-                                    Default Calendar View
+                                <Grid item container xs={5}>
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Default Calendar View
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
-
                                     <TextField
                                         id="initialView"
                                         name="initialView"
@@ -382,99 +494,113 @@ export default function Settings() {
                                         helperText={touched.initialView && errors.initialView}
                                         onChange={handleChange}
                                     >
-                                        <MenuItem value="dayGridMonth">Day Grid - Month</MenuItem>
-                                        <MenuItem value="timeGridWeek">Time Grid - Week</MenuItem>
-                                        <MenuItem value="timeGridDay">Time Grid - Day</MenuItem>
+                                        <MenuItem value="dayGridMonth">Month</MenuItem>
+                                        <MenuItem value="timeGridWeek">Week</MenuItem>
+                                        <MenuItem value="timeGridDay">Day</MenuItem>
                                     </TextField>
 
                                 </Grid>
-                                <Grid item xs={5}>
-                                    Time Grid View: Show Hours
+                                <Grid item container xs={5}>
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Calendar Display Hours
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Set the hours visible on your calendar when in 'Week' or 'Day' view.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        id="slotMinTime"
-                                        name="slotMinTime"
-                                        hiddenLabel
-                                        select
-                                        size="small"
-                                        value={values.slotMinTime}
-                                        error={touched.slotMinTime && Boolean(errors.slotMinTime)}
-                                        helperText={touched.slotMinTime && errors.slotMinTime}
-                                        onChange={handleChange}
-                                        aria-label="start-time-calendar-display"
-                                    >
-                                        <MenuItem value="00:00">12 am</MenuItem>
-                                        <MenuItem value="01:00">1 am</MenuItem>
-                                        <MenuItem value="02:00">2 am</MenuItem>
-                                        <MenuItem value="03:00">3 am</MenuItem>
-                                        <MenuItem value="04:00">4 am</MenuItem>
-                                        <MenuItem value="05:00">5 am</MenuItem>
-                                        <MenuItem value="06:00">6 am</MenuItem>
-                                        <MenuItem value="07:00">7 am</MenuItem>
-                                        <MenuItem value="08:00">8 am</MenuItem>
-                                        <MenuItem value="09:00">9 am</MenuItem>
-                                        <MenuItem value="10:00">10 am</MenuItem>
-                                        <MenuItem value="11:00">11 am</MenuItem>
-                                        <MenuItem value="12:00">12 pm</MenuItem>
-                                        <MenuItem value="13:00">1 pm</MenuItem>
-                                        <MenuItem value="14:00">2 pm</MenuItem>
-                                        <MenuItem value="15:00">3 pm</MenuItem>
-                                        <MenuItem value="16:00">4 pm</MenuItem>
-                                        <MenuItem value="17:00">5 pm</MenuItem>
-                                        <MenuItem value="18:00">6 pm</MenuItem>
-                                        <MenuItem value="19:00">7 pm</MenuItem>
-                                        <MenuItem value="20:00">8 pm</MenuItem>
-                                        <MenuItem value="21:00">9 pm</MenuItem>
-                                        <MenuItem value="22:00">10 pm</MenuItem>
-                                        <MenuItem value="23:00">11 pm</MenuItem>
-                                    </TextField>
-
+                                <Grid container item xs={4} spacing={1} alignItems='center'>
+                                    <Grid item>
+                                        <TextField
+                                            id="slotMinTime"
+                                            name="slotMinTime"
+                                            hiddenLabel
+                                            select
+                                            size="small"
+                                            value={values.slotMinTime}
+                                            error={touched.slotMinTime && Boolean(errors.slotMinTime)}
+                                            helperText={touched.slotMinTime && errors.slotMinTime}
+                                            onChange={handleChange}
+                                            aria-label="start-time-calendar-display"
+                                        >
+                                            <MenuItem value="00:00">12 am</MenuItem>
+                                            <MenuItem value="01:00">1 am</MenuItem>
+                                            <MenuItem value="02:00">2 am</MenuItem>
+                                            <MenuItem value="03:00">3 am</MenuItem>
+                                            <MenuItem value="04:00">4 am</MenuItem>
+                                            <MenuItem value="05:00">5 am</MenuItem>
+                                            <MenuItem value="06:00">6 am</MenuItem>
+                                            <MenuItem value="07:00">7 am</MenuItem>
+                                            <MenuItem value="08:00">8 am</MenuItem>
+                                            <MenuItem value="09:00">9 am</MenuItem>
+                                            <MenuItem value="10:00">10 am</MenuItem>
+                                            <MenuItem value="11:00">11 am</MenuItem>
+                                            <MenuItem value="12:00">12 pm</MenuItem>
+                                            <MenuItem value="13:00">1 pm</MenuItem>
+                                            <MenuItem value="14:00">2 pm</MenuItem>
+                                            <MenuItem value="15:00">3 pm</MenuItem>
+                                            <MenuItem value="16:00">4 pm</MenuItem>
+                                            <MenuItem value="17:00">5 pm</MenuItem>
+                                            <MenuItem value="18:00">6 pm</MenuItem>
+                                            <MenuItem value="19:00">7 pm</MenuItem>
+                                            <MenuItem value="20:00">8 pm</MenuItem>
+                                            <MenuItem value="21:00">9 pm</MenuItem>
+                                            <MenuItem value="22:00">10 pm</MenuItem>
+                                            <MenuItem value="23:00">11 pm</MenuItem>
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={1}>
+                                        to
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            id="slotMaxTime"
+                                            name="slotMaxTime"
+                                            select
+                                            hiddenLabel
+                                            value={values.slotMaxTime}
+                                            size="small"
+                                            aria-label="end-time-calendar-display"
+                                            error={touched.slotMaxTime && Boolean(errors.slotMaxTime)}
+                                            helperText={touched.slotMaxTime && errors.slotMaxTime}
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value="00:00">12 am</MenuItem>
+                                            <MenuItem value="01:00">1 am</MenuItem>
+                                            <MenuItem value="02:00">2 am</MenuItem>
+                                            <MenuItem value="03:00">3 am</MenuItem>
+                                            <MenuItem value="04:00">4 am</MenuItem>
+                                            <MenuItem value="05:00">5 am</MenuItem>
+                                            <MenuItem value="06:00">6 am</MenuItem>
+                                            <MenuItem value="07:00">7 am</MenuItem>
+                                            <MenuItem value="08:00">8 am</MenuItem>
+                                            <MenuItem value="09:00">9 am</MenuItem>
+                                            <MenuItem value="10:00">10 am</MenuItem>
+                                            <MenuItem value="11:00">11 am</MenuItem>
+                                            <MenuItem value="12:00">12 pm</MenuItem>
+                                            <MenuItem value="13:00">1 pm</MenuItem>
+                                            <MenuItem value="14:00">2 pm</MenuItem>
+                                            <MenuItem value="15:00">3 pm</MenuItem>
+                                            <MenuItem value="16:00">4 pm</MenuItem>
+                                            <MenuItem value="17:00">5 pm</MenuItem>
+                                            <MenuItem value="18:00">6 pm</MenuItem>
+                                            <MenuItem value="19:00">7 pm</MenuItem>
+                                            <MenuItem value="20:00">8 pm</MenuItem>
+                                            <MenuItem value="21:00">9 pm</MenuItem>
+                                            <MenuItem value="22:00">10 pm</MenuItem>
+                                            <MenuItem value="23:00">11 pm</MenuItem>
+                                        </TextField>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={1}>
-                                    to
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        id="slotMaxTime"
-                                        name="slotMaxTime"
-                                        select
-                                        hiddenLabel
-                                        value={values.slotMaxTime}
-                                        size="small"
-                                        aria-label="end-time-calendar-display"
-                                        error={touched.slotMaxTime && Boolean(errors.slotMaxTime)}
-                                        helperText={touched.slotMaxTime && errors.slotMaxTime}
-                                        onChange={handleChange}
-                                    >
-                                        <MenuItem value="00:00">12 am</MenuItem>
-                                        <MenuItem value="01:00">1 am</MenuItem>
-                                        <MenuItem value="02:00">2 am</MenuItem>
-                                        <MenuItem value="03:00">3 am</MenuItem>
-                                        <MenuItem value="04:00">4 am</MenuItem>
-                                        <MenuItem value="05:00">5 am</MenuItem>
-                                        <MenuItem value="06:00">6 am</MenuItem>
-                                        <MenuItem value="07:00">7 am</MenuItem>
-                                        <MenuItem value="08:00">8 am</MenuItem>
-                                        <MenuItem value="09:00">9 am</MenuItem>
-                                        <MenuItem value="10:00">10 am</MenuItem>
-                                        <MenuItem value="11:00">11 am</MenuItem>
-                                        <MenuItem value="12:00">12 pm</MenuItem>
-                                        <MenuItem value="13:00">1 pm</MenuItem>
-                                        <MenuItem value="14:00">2 pm</MenuItem>
-                                        <MenuItem value="15:00">3 pm</MenuItem>
-                                        <MenuItem value="16:00">4 pm</MenuItem>
-                                        <MenuItem value="17:00">5 pm</MenuItem>
-                                        <MenuItem value="18:00">6 pm</MenuItem>
-                                        <MenuItem value="19:00">7 pm</MenuItem>
-                                        <MenuItem value="20:00">8 pm</MenuItem>
-                                        <MenuItem value="21:00">9 pm</MenuItem>
-                                        <MenuItem value="22:00">10 pm</MenuItem>
-                                        <MenuItem value="23:00">11 pm</MenuItem>
-                                    </TextField>
-                                </Grid>
-                                <Grid item xs={5}>
-                                    Show Weekends
+                                <Grid item container xs={5}>
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Show Weekends
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <FormControl component="fieldset">
@@ -491,8 +617,19 @@ export default function Settings() {
                                     </FormControl>
                                 </Grid>
 
-                                <Grid item xs={5}>
-                                    Default Event Visibility
+                                <Grid item container xs={5}>
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Default Event Visibility
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Toggle the default visibility of new calendar events.
+                                            <br />
+                                            <em>Students can always see events they are registered for.</em>
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <FormControl component="fieldset">
@@ -510,7 +647,16 @@ export default function Settings() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={5}>
-                                    Allow Students to Register for Events
+                                    <Grid item >
+                                        <Typography variant="button" color="initial">
+                                            Allow Students to Register for Events
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="caption" color="initial">
+                                            Allow students to register for events with open student slots.
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <FormControl component="fieldset">
@@ -527,9 +673,18 @@ export default function Settings() {
 
                                     </FormControl>
                                 </Grid>
-                                {values.permitEventRegistration === 'true' && <>
+                                {(values.permitEventRegistration === 'true' || values.permitEventRegistration === true) && <>
                                     <Grid item xs={5}>
-                                        Registration Deadline
+                                        <Grid item >
+                                            <Typography variant="button" color="initial">
+                                                Event Registration Deadline
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography variant="caption" color="initial">
+                                                Specify how soon before an event a student must register.
+                                            </Typography>
+                                        </Grid>
                                     </Grid>
                                     <Grid item xs={5}>
                                         <TextField
@@ -549,11 +704,8 @@ export default function Settings() {
                                         />
                                     </Grid>
                                 </>}
-                                <Grid item xs={12}>
-
-                                </Grid>
+                            
                             </Grid>
-
                         </Paper>
                         <Box sx={{
                             position: 'sticky',
@@ -574,8 +726,9 @@ export default function Settings() {
                             </Button>
                         </Box>
                     </Box >
-                )}
-            </Formik>
+                )
+                }
+            </Formik >
         </Container >
     )
 }

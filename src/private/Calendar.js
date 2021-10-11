@@ -7,6 +7,8 @@ import EventIcon from '@mui/icons-material/Event'
 import PageHeader from './components/PageHeader'
 import './calendar/calendar.css'
 import CalendarToolbar from './calendar/CalendarToolbar'
+import { useState } from 'react'
+import EventTypes from './calendar/EventTypes'
 
 export default function Calendar() {
 
@@ -65,6 +67,28 @@ export default function Calendar() {
     },
   ]
 
+  const [openMenu, setOpenMenu] = useState({
+    eventTypes: false,
+    newEvent: false,
+  })
+
+  const handleMenus = (menu) => {
+    switch (menu) {
+      case 'eventTypes':
+        setOpenMenu({ ...openMenu, eventTypes: true })
+        break;
+      case 'newEvent':
+        setOpenMenu({ ...openMenu, newEvent: true })
+        break;
+
+      default:
+        setOpenMenu({
+          eventTypes: false,
+          newEvent: false,
+        })
+        break;
+    }
+  }
 
   const handleEventClick = () => {
     console.log('clicked')
@@ -72,6 +96,12 @@ export default function Calendar() {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      {openMenu.eventTypes &&
+        <EventTypes
+          closeMenu={handleMenus}
+          open={openMenu.eventTypes}
+        />
+      }
       <PageHeader
         icon={<EventIcon fontSize="large" sx={{ mr: 1 }} />}
         page="Calendar"
@@ -86,7 +116,9 @@ export default function Calendar() {
             justifyContent: 'space-between',
             flexDirection: { xs: 'column', sm: 'row' }
           }}>
-            <CalendarToolbar />
+            <CalendarToolbar
+              handleMenus={handleMenus}
+            />
           </Paper>
         </Grid>
         <Grid item xs={12}>

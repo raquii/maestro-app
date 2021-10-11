@@ -10,7 +10,7 @@ import WeekViewIcon from '@mui/icons-material/CalendarViewWeek'
 import DayViewIcon from '@mui/icons-material/CalendarViewDay'
 import RepeatIcon from '@mui/icons-material/Repeat';
 
-export default function CalendarToolbar() {
+export default function CalendarToolbar({handleMenus}) {
     //allows all popovers to be controlled by single piece of state
     const [popover, setPopover] = useState({
         anchor: null,
@@ -38,9 +38,10 @@ export default function CalendarToolbar() {
                     Add
                 </Button>
                 <Button
-                    id='categories-button'
-                    aria-label="calendar categories button"
+                    id='event-types-button'
+                    aria-label="calendar event-types button"
                     size='small'
+                    onClick={()=>handleMenus('eventTypes')}
                 >
                     <ListIcon color="secondary" />
                     Event Types

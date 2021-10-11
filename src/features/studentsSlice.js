@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { api, updateStudents } from "./api";
+import { api } from "./api";
 
 const initialState = [];
 

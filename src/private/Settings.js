@@ -15,6 +15,7 @@ import {
     Button,
     Divider,
 } from "@mui/material"
+import { styled } from '@mui/material/styles';
 import SettingsIcon from "@mui/icons-material/Settings";
 import SaveIcon from '@mui/icons-material/Save';
 import { useSelector } from "react-redux";
@@ -70,6 +71,13 @@ const validationSchema = yup.object({
     studentsCanEditProfile: yup.boolean(),
 })
 
+const ResponsiveGrid = styled(Grid)(({ theme }) => ({
+    [theme.breakpoints.down('sm')]: {
+        justifyContent: 'center',
+        textAlign: 'center'
+    },
+}))
+
 export default function Settings() {
     const settings = useSelector(state => state.settings.attributes)
     const id = useSelector(state => state.settings.id)
@@ -86,7 +94,6 @@ export default function Settings() {
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
                     const castValues = { id: id, ...validationSchema.cast(values) }
-                    console.log(castValues)
                     updateSettings(castValues)
                 }}
             >
@@ -94,37 +101,38 @@ export default function Settings() {
                     <Box component="form" sx={{ textAlign: 'left', display: 'flex', flexFlow: 'column' }}>
                         {/* Studio Settings */}
                         <Paper sx={{ p: 2, mb: 2, }}>
-                            <Grid container spacing={2}>
+                            <ResponsiveGrid container spacing={2}>
 
-                                <Grid item xs={12}>
+                                <Grid item xs={12} md={12}>
                                     <Typography variant="h4" component="h2" gutterBottom color="primary">Studio Settings</Typography>
                                     <Divider />
                                 </Grid>
-
-                                <Grid container item xs={5}>
+                                <ResponsiveGrid container item xs={12} md={5}>
                                     <Grid item>
                                         <Typography variant="button" color="initial">
                                             Default Lesson Price
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Used when creating new students.
                                             <br />
                                             You can always change the price for individual students.
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={3}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={3} alignSelf='center'>
                                     <TextField
                                         id="defaultLessonPrice"
                                         name="defaultLessonPrice"
+                                        sx={{ width: 140 }}
                                         hiddenLabel
                                         size="small"
                                         value={values.defaultLessonPrice}
                                         error={touched.defaultLessonPrice && Boolean(errors.defaultLessonPrice)}
                                         helperText={touched.defaultLessonPrice && errors.defaultLessonPrice}
                                         onChange={handleChange}
+                                        inputProps={{ style: { textAlign: 'center' }, }}
                                         InputProps={{
                                             inputMode: 'numeric',
                                             pattern: '[0-9]*',
@@ -133,52 +141,53 @@ export default function Settings() {
                                     />
                                 </Grid>
 
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5}>
                                     <Grid item>
                                         <Typography variant="button" color="initial">
                                             Default Lesson Duration
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={10}>
+                                    <Grid item xs={12} md={10}>
                                         <Typography variant="caption" color="initial">
                                             Used when creating new events.
                                             <br />
                                             You can always change how long individual events are.
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={3}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={3} alignSelf='center'>
                                     <TextField
                                         id="defaultLessonDuration"
                                         name="defaultLessonDuration"
                                         hiddenLabel
                                         size="small"
+                                        sx={{ width: 140 }}
                                         value={values.defaultLessonDuration}
                                         error={touched.defaultLessonDuration && Boolean(errors.defaultLessonDuration)}
                                         helperText={touched.defaultLessonDuration && errors.defaultLessonDuration}
                                         onChange={handleChange}
-                                        textAlign="right"
                                         inputProps={{
                                             inputMode: 'numeric',
                                             pattern: '[0-9]*',
-                                         }}
-                                        InputProps={{endAdornment:<InputAdornment position="end">minutes</InputAdornment>}}
+                                            style: { textAlign: 'center' }
+                                        }}
+                                        InputProps={{ endAdornment: <InputAdornment position="end">minutes</InputAdornment> }}
                                     />
                                 </Grid>
 
-                                <Grid item xs={5}>
+                                <ResponsiveGrid item xs={12} md={5}>
                                     <Grid item>
                                         <Typography variant="button" color="initial">
                                             Studio Location
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Visible to students and parents.
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={5}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={5}>
                                     <TextField
                                         id="location"
                                         size="small"
@@ -193,20 +202,20 @@ export default function Settings() {
                                     />
                                 </Grid>
 
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5} alignSelf='center'>
                                     <Grid item>
                                         <Typography variant="button" color="initial">
                                             Students Can Edit Their Profiles
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Allow students in your studio to edit their own profile information.
                                         </Typography>
                                     </Grid>
 
-                                </Grid>
-                                <Grid item xs={5}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={5} alignSelf='center'>
                                     <FormControl component="fieldset">
                                         <RadioGroup row
                                             aria-label="students-can-edit-profile"
@@ -219,29 +228,29 @@ export default function Settings() {
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
-                            </Grid>
+                            </ResponsiveGrid>
                         </Paper>
 
                         {/* cancellation policy */}
                         <Paper sx={{ p: 2, mb: 2, }} >
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                            <ResponsiveGrid container spacing={2}>
+                                <Grid item xs={12} md={12}>
                                     <Typography variant="h4" component="h2" gutterBottom color="primary">Cancellation Policies</Typography>
                                     <Divider />
                                 </Grid>
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5}>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Cancellation Policy Summary
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             A typed summary of your cancellation and make-up policy, visible to students and parents.
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={6}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={6} alignSelf='center'>
                                     <TextField
                                         id="cancellationPolicySummary"
                                         name="cancellationPolicySummary"
@@ -255,19 +264,19 @@ export default function Settings() {
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5}>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Allow Cancellations
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Permit students to cancel via the app.
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={5}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={5} alignSelf='center'>
                                     <FormControl component="fieldset">
                                         <RadioGroup row
                                             aria-label="allow-cancellations"
@@ -282,24 +291,26 @@ export default function Settings() {
                                 </Grid>
                                 {(values.permitCancellations === 'true' || values.permitCancellations === true) &&
                                     <>
-                                        <Grid item container xs={5}>
+                                        <ResponsiveGrid item container xs={12} md={5} alignSelf='center'>
                                             <Grid item >
                                                 <Typography variant="button" color="initial">
                                                     Cancellation Deadline
                                                 </Typography>
                                             </Grid>
-                                        </Grid>
+                                        </ResponsiveGrid>
 
-                                        <Grid item xs={3}>
+                                        <Grid item xs={12} md={3} alignSelf='center'>
                                             <TextField
                                                 id="cancellationDeadline"
                                                 name="cancellationDeadline"
                                                 hiddenLabel
                                                 size="small"
+                                                sx={{ width: 140 }}
                                                 value={values.cancellationDeadline}
                                                 error={touched.cancellationDeadline && Boolean(errors.cancellationDeadline)}
                                                 helperText={touched.cancellationDeadline && errors.cancellationDeadline}
                                                 onChange={handleChange}
+                                                inputProps={{ style: { textAlign: 'center' }, }}
                                                 InputProps={{
                                                     inputMode: 'numeric',
                                                     pattern: '[0-9]*',
@@ -309,15 +320,15 @@ export default function Settings() {
                                         </Grid>
                                     </>
                                 }
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5} alignSelf='center'>
                                     <Grid item>
                                         <Typography variant="button" color="initial">
                                             Allow Make-Up Credits
                                         </Typography>
                                     </Grid>
-                                </Grid>
+                                </ResponsiveGrid>
 
-                                <Grid item xs={5}>
+                                <Grid item xs={12} md={5} alignSelf='center'>
                                     <FormControl component="fieldset">
                                         <FormLabel component="legend"></FormLabel>
                                         <RadioGroup row
@@ -333,19 +344,19 @@ export default function Settings() {
                                     </FormControl>
                                 </Grid>
                                 {(values.permitMakeUpCredits === 'true' || values.permitMakeUpCredits === true) && <>
-                                    <Grid item container xs={5}>
+                                    <ResponsiveGrid item container xs={12} md={5}>
                                         <Grid item >
                                             <Typography variant="button" color="initial">
                                                 Expire Make-Up Credits
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={9}>
+                                        <Grid item xs={12} md={9}>
                                             <Typography variant="caption" color="initial">
                                                 Set maximum age for make-up credits.
                                             </Typography>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={3}>
+                                    </ResponsiveGrid>
+                                    <Grid item xs={12} md={3} alignSelf='center'>
                                         <FormControl component="fieldset">
                                             <FormLabel component="legend"></FormLabel>
                                             <RadioGroup row
@@ -360,23 +371,25 @@ export default function Settings() {
                                         </FormControl>
                                     </Grid>
                                     {(values.expireMakeUpCredits === 'true' || values.expireMakeUpCredits === true) && <>
-                                        <Grid item container xs={2}>
-                                            <Grid item>
+                                        <ResponsiveGrid item container xs={12} md={2} alignSelf='center'>
+                                            <Grid item sx={{ textAlign: 'right' }}>
                                                 <Typography variant="button" color="initial">
                                                     Make-Up Credit Lifespan
                                                 </Typography>
                                             </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
+                                        </ResponsiveGrid>
+                                        <Grid item xs={12} md={2} alignSelf='center'>
                                             <TextField
                                                 id="maxCreditAge"
                                                 name="maxCreditAge"
                                                 hiddenLabel
+                                                sx={{ width: 120 }}
                                                 size="small"
                                                 value={values.maxCreditAge}
                                                 error={touched.maxCreditAge && Boolean(errors.maxCreditAge)}
                                                 helperText={touched.maxCreditAge && errors.maxCreditAge}
                                                 onChange={handleChange}
+                                                inputProps={{ style: { textAlign: 'center' }, }}
                                                 InputProps={{
                                                     inputMode: 'numeric',
                                                     pattern: '[0-9]*',
@@ -385,19 +398,19 @@ export default function Settings() {
                                             />
                                         </Grid>
                                     </>}
-                                    <Grid item container xs={5}>
+                                    <ResponsiveGrid item container xs={12} md={5}>
                                         <Grid item >
                                             <Typography variant="button" color="initial">
                                                 Limit Accrued Make-Up Credits
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={9}>
+                                        <Grid item xs={12} md={9}>
                                             <Typography variant="caption" color="initial">
                                                 Set a maximum allowance of accrued make-up credits.
                                             </Typography>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={3}>
+                                    </ResponsiveGrid>
+                                    <Grid item xs={12} md={3} alignSelf='center'>
                                         <FormControl component="fieldset">
                                             <FormLabel component="legend"></FormLabel>
                                             <RadioGroup row
@@ -413,23 +426,25 @@ export default function Settings() {
                                         </FormControl>
                                     </Grid>
                                     {(values.limitTotalMakeUpCredits === 'true' || values.limitTotalMakeUpCredits === true) && <>
-                                        <Grid item container xs={2}>
-                                            <Grid item >
+                                        <ResponsiveGrid item container xs={12} md={2} alignSelf='center'>
+                                            <Grid item sx={{ textAlign: 'right' }}>
                                                 <Typography variant="button" color="initial">
                                                     Max Accrued Make-Up Credits
                                                 </Typography>
                                             </Grid>
-                                        </Grid>
-                                        <Grid item xs={2}>
+                                        </ResponsiveGrid>
+                                        <Grid item xs={12} md={2} alignSelf='center'>
                                             <TextField
                                                 id="maxTotalMakeUpCredits"
                                                 name="maxTotalMakeUpCredits"
                                                 hiddenLabel
                                                 size="small"
+                                                sx={{ width: 120 }}
                                                 value={values.maxTotalMakeUpCredits}
                                                 error={touched.maxTotalMakeUpCredits && Boolean(errors.maxTotalMakeUpCredits)}
                                                 helperText={touched.maxTotalMakeUpCredits && errors.maxTotalMakeUpCredits}
                                                 onChange={handleChange}
+                                                inputProps={{ style: { textAlign: 'center' }, }}
                                                 InputProps={{
                                                     inputMode: 'numeric',
                                                     pattern: '[0-9]*',
@@ -438,19 +453,19 @@ export default function Settings() {
                                             />
                                         </Grid>
                                     </>}
-                                    <Grid item container xs={5}>
+                                    <ResponsiveGrid item container xs={12} md={5} alignSelf='center'>
                                         <Grid item >
                                             <Typography variant="button" color="initial">
                                                 Issue Make-Up Credits Automatically
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={9}>
+                                        <Grid item xs={12} md={9}>
                                             <Typography variant="caption" color="initial">
                                                 If a student cancels before the <strong>cancellation deadline</strong>, a credit will automatically be issued.
                                             </Typography>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={5}>
+                                    </ResponsiveGrid>
+                                    <Grid item xs={12} md={5} alignSelf='center'>
                                         <FormControl component="fieldset">
                                             <RadioGroup row
                                                 aria-label="limit-makeups"
@@ -464,24 +479,24 @@ export default function Settings() {
                                         </FormControl>
                                     </Grid>
                                 </>}
-                            </Grid>
+                            </ResponsiveGrid>
                         </Paper>
 
                         {/* Calendar Settings */}
                         <Paper sx={{ p: 2, mb: 2, }} >
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                            <ResponsiveGrid container spacing={2}>
+                                <Grid item xs={12} md={12}>
                                     <Typography variant="h4" component="h2" gutterBottom color="primary">Calendar Settings</Typography>
                                     <Divider />
                                 </Grid>
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5}>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Default Calendar View
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={5}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={5} alignSelf='center'>
                                     <TextField
                                         id="initialView"
                                         name="initialView"
@@ -500,25 +515,26 @@ export default function Settings() {
                                     </TextField>
 
                                 </Grid>
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5}>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Calendar Display Hours
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Set the hours visible on your calendar when in 'Week' or 'Day' view.
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid container item xs={4} spacing={1} alignItems='center'>
-                                    <Grid item>
+                                </ResponsiveGrid>
+                                <ResponsiveGrid container item xs={12} md={4} alignItems='center'>
+                                    <Grid item xs={3}>
                                         <TextField
                                             id="slotMinTime"
                                             name="slotMinTime"
                                             hiddenLabel
                                             select
+                                            variant="standard"
                                             size="small"
                                             value={values.slotMinTime}
                                             error={touched.slotMinTime && Boolean(errors.slotMinTime)}
@@ -552,15 +568,18 @@ export default function Settings() {
                                             <MenuItem value="23:00">11 pm</MenuItem>
                                         </TextField>
                                     </Grid>
-                                    <Grid item xs={1}>
-                                        to
+                                    <Grid item xs={2} >
+                                        <Typography variant="button" component="p" color="initial">
+                                            to
+                                        </Typography>
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={4} >
                                         <TextField
                                             id="slotMaxTime"
                                             name="slotMaxTime"
                                             select
                                             hiddenLabel
+                                            variant="standard"
                                             value={values.slotMaxTime}
                                             size="small"
                                             aria-label="end-time-calendar-display"
@@ -594,15 +613,15 @@ export default function Settings() {
                                             <MenuItem value="23:00">11 pm</MenuItem>
                                         </TextField>
                                     </Grid>
-                                </Grid>
-                                <Grid item container xs={5}>
+                                </ResponsiveGrid>
+                                <ResponsiveGrid item container xs={12} md={5} alignItems='center'>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Show Weekends
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={5}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={5} alignItems='center'>
                                     <FormControl component="fieldset">
                                         <FormLabel component="legend"></FormLabel>
                                         <RadioGroup row
@@ -617,21 +636,21 @@ export default function Settings() {
                                     </FormControl>
                                 </Grid>
 
-                                <Grid item container xs={5}>
+                                <ResponsiveGrid item container xs={12} md={5} alignItems='center'>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Default Event Visibility
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Toggle the default visibility of new calendar events.
                                             <br />
                                             <em>Students can always see events they are registered for.</em>
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={5}>
+                                </ResponsiveGrid>
+                                <Grid item xs={12} md={5} alignItems='center'>
                                     <FormControl component="fieldset">
                                         <FormLabel component="legend"></FormLabel>
                                         <RadioGroup row
@@ -643,22 +662,21 @@ export default function Settings() {
                                             <FormControlLabel value="true" control={<Radio />} label="Public" />
                                             <FormControlLabel value="false" control={<Radio />} label="Private" />
                                         </RadioGroup>
-
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={12} md={5}>
                                     <Grid item >
                                         <Typography variant="button" color="initial">
                                             Allow Students to Register for Events
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12} md={9}>
                                         <Typography variant="caption" color="initial">
                                             Allow students to register for events with open student slots.
                                         </Typography>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={5}>
+                                <Grid item xs={12} md={5} alignItems='center'>
                                     <FormControl component="fieldset">
                                         <FormLabel component="legend"></FormLabel>
                                         <RadioGroup row
@@ -674,28 +692,30 @@ export default function Settings() {
                                     </FormControl>
                                 </Grid>
                                 {(values.permitEventRegistration === 'true' || values.permitEventRegistration === true) && <>
-                                    <Grid item xs={5}>
+                                    <ResponsiveGrid container item xs={12} md={5}>
                                         <Grid item >
                                             <Typography variant="button" color="initial">
                                                 Event Registration Deadline
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={9}>
+                                        <Grid item xs={12} md={9}>
                                             <Typography variant="caption" color="initial">
                                                 Specify how soon before an event a student must register.
                                             </Typography>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={5}>
+                                    </ResponsiveGrid>
+                                    <Grid item xs={12} md={5} alignItems='center'>
                                         <TextField
                                             id="eventRegistrationDeadline"
                                             name="eventRegistrationDeadline"
                                             hiddenLabel
                                             size="small"
+                                            sx={{ width: 140 }}
                                             value={values.eventRegistrationDeadline}
                                             error={touched.eventRegistrationDeadline && Boolean(errors.eventRegistrationDeadline)}
                                             helperText={touched.eventRegistrationDeadline && errors.eventRegistrationDeadline}
                                             onChange={handleChange}
+                                            inputProps={{ style: { textAlign: 'center' }, }}
                                             InputProps={{
                                                 inputMode: 'numeric',
                                                 pattern: '[0-9]*',
@@ -704,8 +724,8 @@ export default function Settings() {
                                         />
                                     </Grid>
                                 </>}
-                            
-                            </Grid>
+
+                            </ResponsiveGrid>
                         </Paper>
                         <Box sx={{
                             position: 'sticky',

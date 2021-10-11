@@ -44,7 +44,7 @@ export const NoSelectedStudents = ({ open, handleClose }) => {
 export const LoginEmailConfirmation = ({ open, handleClose, selected, to }) => {
 
     function sendLoginEmails() {
-        console.log('Sending Login Emails to', names)
+        console.log('Sending Login Emails to', selected)
     }
 
     const names = to === 'students' ?

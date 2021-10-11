@@ -124,7 +124,7 @@ export default function Students() {
                 <Route path={`${match.path}/new-student`}>
                     <NewStudentForm />
                 </Route>
-                <Route path="/">
+                <Route exact path={`${match.path}`}>
 
                     <PageHeader
                         icon={<GroupsIcon fontSize="large" sx={{ mr: 1 }} />}
@@ -164,6 +164,8 @@ export default function Students() {
                             </Paper>
                         </Grid>
                     </Grid>
+                </Route>
+                <Route path={`${match.path}/:studentId`}>
 
                 </Route>
             </Switch>

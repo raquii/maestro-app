@@ -2,7 +2,7 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useState } from 'react';
-import { useHistory } from 'react-router';
+// import { useHistory } from 'react-router';
 import {
     Button,
     Grid,
@@ -13,7 +13,6 @@ import {
     Alert,
     Paper,
     MenuItem,
-    Switch,
     TextField,
     Checkbox
 } from '@mui/material';
@@ -28,7 +27,7 @@ import PageHeader from '../components/PageHeader';
 export default function NewStudentForm() {
     const [responseErrors, setResponseErrors] = useState([]);
 
-    const history = useHistory();
+    // const history = useHistory();
     const renderedErrors = responseErrors.map(error => <Alert key={error} severity="error">{error}</Alert>)
 
     const formik = useFormik({
@@ -81,6 +80,9 @@ export default function NewStudentForm() {
         ,
         onSubmit: values => {
             console.log(values)
+            if(values.errors){
+                setResponseErrors(values.errors)
+            }
         }, 
     })
 
@@ -118,6 +120,7 @@ export default function NewStudentForm() {
                                         variant="outlined"
                                         name="firstName"
                                         label="First Name*"
+                                        value={formik.values.firstName}
                                         error={formik.touched.firstName && Boolean(formik.errors.firstName)}
                                         helperText={formik.touched.firstName && formik.errors.firstName}
                                         onChange={formik.handleChange}

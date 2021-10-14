@@ -9,16 +9,19 @@ import MonthViewIcon from '@mui/icons-material/CalendarViewMonth'
 import WeekViewIcon from '@mui/icons-material/CalendarViewWeek'
 import DayViewIcon from '@mui/icons-material/CalendarViewDay'
 import RepeatIcon from '@mui/icons-material/Repeat';
+import { Link } from "react-router-dom";
 
-export default function CalendarToolbar({handleMenus}) {
+import { print } from "../../util/print";
+
+export default function CalendarToolbar({handleMenus, calendarRef, url}) {
     //allows all popovers to be controlled by single piece of state
     const [popover, setPopover] = useState({
         anchor: null,
         menu: -1
     })
 
-    function handleViewMenuClick(e) {
-        setPopover({ anchor: null, menu: -1 })
+    const handleViewChange=(view)=>{
+        calendarRef.current.getApi().changeView(view)
     }
 
     return (
@@ -58,6 +61,7 @@ export default function CalendarToolbar({handleMenus}) {
                     id='student-print-button'
                     aria-label="calendar print button"
                     size='small'
+                    onClick={()=>print('calendar')}
                 >
                     <PrintIcon color="secondary" />
                     Print
@@ -96,7 +100,7 @@ export default function CalendarToolbar({handleMenus}) {
                         role='listbox'
                         autoFocusItem={popover.anchor !== null}
                     >
-                        <MenuItem >
+                        <MenuItem component={Link} to={`${url}/event-details`} >
                             <ListItemIcon>
                                 <AddIcon fontSize="small" />
                             </ListItemIcon>
@@ -116,19 +120,19 @@ export default function CalendarToolbar({handleMenus}) {
                         role='listbox'
                         autoFocusItem={popover.anchor !== null}
                     >
-                        <MenuItem >
+                        <MenuItem onClick={()=>handleViewChange('dayGridMonth')}>
                             <ListItemIcon>
                                 <MonthViewIcon fontSize="small" />
                             </ListItemIcon>
                             <ListItemText>Month</ListItemText>
                         </MenuItem>
-                        <MenuItem >
+                        <MenuItem onClick={()=>handleViewChange('timeGridWeek')}>
                             <ListItemIcon>
                                 <WeekViewIcon fontSize="small" />
                             </ListItemIcon>
                             <ListItemText>Week</ListItemText>
                         </MenuItem>
-                        <MenuItem >
+                        <MenuItem onClick={()=>handleViewChange('timeGridDay')}>
                             <ListItemIcon>
                                 <DayViewIcon fontSize="small" />
                             </ListItemIcon>

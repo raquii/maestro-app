@@ -149,7 +149,7 @@ export default function Sidebar() {
                         variant="h5"
                         noWrap
                         component="div">
-                        Maestro
+                        Motif
                     </Typography>
                     <Tooltip title="Account Settings">
                         <IconButton onClick={handleClick} size='small' sx={{ ml: 2 }}>

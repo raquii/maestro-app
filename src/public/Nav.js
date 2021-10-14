@@ -17,7 +17,7 @@ export default function Nav() {
                     noWrap
                     sx={{ flex: 1 }}
                 >
-                    Maestro
+                    Motif
                 </Typography>
                 <Box>
                     <Button

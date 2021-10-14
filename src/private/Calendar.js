@@ -1,16 +1,22 @@
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
 
-import { Container, Paper, Grid } from '@mui/material'
-import EventIcon from '@mui/icons-material/Event'
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 
-import PageHeader from './components/PageHeader'
-import './calendar/calendar.css'
-import CalendarToolbar from './calendar/CalendarToolbar'
-import { useState } from 'react'
-import EventTypes from './calendar/EventTypes'
+import { Container, Paper, Grid } from '@mui/material';
+import EventIcon from '@mui/icons-material/Event';
+
+import './calendar/calendar.css';
+import PageHeader from './components/PageHeader';
+import CalendarToolbar from './calendar/CalendarToolbar';
+import EventTypes from './calendar/EventTypes';
+import EventForm from './calendar/EventForm';
 
 export default function Calendar() {
+  const settings = useSelector(state => state.settings.attributes);
 
   const data = [
     {
@@ -67,10 +73,12 @@ export default function Calendar() {
     },
   ]
 
+  const calendarRef = useRef();
+
   const [openMenu, setOpenMenu] = useState({
     eventTypes: false,
     newEvent: false,
-  })
+  });
 
   const handleMenus = (menu) => {
     switch (menu) {
@@ -88,11 +96,13 @@ export default function Calendar() {
         })
         break;
     }
-  }
+  };
 
   const handleEventClick = () => {
     console.log('clicked')
-  }
+  };
+
+  const { path, url } = useRouteMatch();
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -102,47 +112,51 @@ export default function Calendar() {
           open={openMenu.eventTypes}
         />
       }
-      <PageHeader
-        icon={<EventIcon fontSize="large" sx={{ mr: 1 }} />}
-        page="Calendar"
-      />
-
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper sx={{
-            p: 2,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: { xs: 'column', sm: 'row' }
-          }}>
-            <CalendarToolbar
-              handleMenus={handleMenus}
-            />
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              p: 2,
-              height: 'auto'
-            }}
-          >
-            <FullCalendar
-              plugins={[dayGridPlugin]}
-              initialView="dayGridMonth"
-              weekends={false}
-              events={data}
-              eventClick={handleEventClick}
-              nowIndicator={true}
-              slotMinTime="09:00"
-              slotMaxTime="21:00"
-              eventColor="#ee7d68"
-              height='auto'
-            />
-          </Paper>
-        </Grid>
-      </Grid>
+      <Switch>
+        <Route path={`${path}/event-details`}>
+          <EventForm />
+        </Route >
+        <Route exact path={`${path}`}>
+          <PageHeader icon={<EventIcon fontSize="large" sx={{ mr: 1 }} />} page="Calendar" />
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Paper sx={{
+                p: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: { xs: 'column', sm: 'row' }
+              }}>
+                <CalendarToolbar
+                  handleMenus={handleMenus}
+                  calendarRef={calendarRef}
+                  url={url}
+                />
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2, height: 'auto' }}>
+                <div id='calendar'>
+                  <FullCalendar
+                    id='calendar'
+                    plugins={[dayGridPlugin, timeGridPlugin]}
+                    initialView={settings.initialView}
+                    weekends={false}
+                    ref={calendarRef}
+                    events={data}
+                    eventClick={handleEventClick}
+                    nowIndicator={true}
+                    slotMinTime={settings.slotMinTime}
+                    slotMaxTime={settings.slotMaxTime}
+                    eventColor="#ee7d68"
+                    height='auto'
+                  />
+                </div>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Route>
+      </Switch>
     </Container>
   )
 }

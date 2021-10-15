@@ -5,7 +5,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
 import { Switch, Route, useRouteMatch } from "react-router-dom";
-
 import { Container, Paper, Grid } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
 
@@ -15,16 +14,19 @@ import PageHeader from './components/PageHeader';
 import CalendarToolbar from './calendar/CalendarToolbar';
 import EventTypes from './calendar/EventTypes';
 import EventForm from './calendar/EventForm';
+import EventSummary from './calendar/EventSummary';
 
 export default function Calendar() {
   const settings = useSelector(state => state.settings.attributes);
-  const events = useSelector(state => state.events)
+  const events = useSelector(state => state.events);
+
+  const [selectedEvent, setSelectedEvent] = useState({});
 
   const calendarRef = useRef();
 
   const [openMenu, setOpenMenu] = useState({
     eventTypes: false,
-    newEvent: false,
+    eventSummary: false,
   });
 
   const handleMenus = (menu) => {
@@ -32,21 +34,26 @@ export default function Calendar() {
       case 'eventTypes':
         setOpenMenu({ ...openMenu, eventTypes: true })
         break;
-      case 'newEvent':
-        setOpenMenu({ ...openMenu, newEvent: true })
+      case 'eventSummary':
+        setOpenMenu({ ...openMenu, eventSummary: true })
         break;
 
       default:
         setOpenMenu({
           eventTypes: false,
-          newEvent: false,
+          eventSummary: false,
         })
         break;
     }
   };
 
   const handleEventClick = (e) => {
-    console.log(e)
+    console.log(e.event)
+    const id = e.event.id;
+    const event = events.find(evt=> evt.id === id);
+    setSelectedEvent(event);
+    handleMenus('eventSummary')
+    console.log(event)
   };
 
   const { path, url } = useRouteMatch();
@@ -59,9 +66,24 @@ export default function Calendar() {
           open={openMenu.eventTypes}
         />
       }
+      {openMenu.eventSummary &&
+        <EventSummary 
+        event={selectedEvent}
+        setSelectedEvent={setSelectedEvent}
+        closeMenu={handleMenus}
+        open={openMenu.eventSummary}
+        url={url} 
+        />
+      }
       <Switch>
-        <Route path={`${path}/event-details`}>
+        <Route exact path={`${path}/event-details`}>
           <EventForm />
+        </Route >
+        <Route path={`${path}/event-details/:id`}>
+          <EventForm event={selectedEvent} setSelectedEvent={setSelectedEvent} />
+        </Route >
+        <Route path={`${path}/default-event-details`}>
+          <EventForm defaultLesson={true}/>
         </Route >
         <Route exact path={`${path}`}>
           <PageHeader icon={<EventIcon fontSize="large" sx={{ mr: 1 }} />} page="Calendar" />

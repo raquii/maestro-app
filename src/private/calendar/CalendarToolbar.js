@@ -106,7 +106,7 @@ export default function CalendarToolbar({handleMenus, calendarRef, url}) {
                             </ListItemIcon>
                             <ListItemText>New Event</ListItemText>
                         </MenuItem>
-                        <MenuItem >
+                        <MenuItem component={Link} to={`${url}/default-event-details`}>
                         <ListItemIcon>
                                 <RepeatIcon fontSize="small" />
                             </ListItemIcon>

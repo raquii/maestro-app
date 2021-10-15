@@ -15,7 +15,10 @@ import {
     Button,
     Autocomplete,
     Checkbox,
-    Divider
+    Divider,
+    Backdrop,
+    CircularProgress,
+    Alert
 } from "@mui/material"
 import { styled } from '@mui/material/styles';
 import EventIcon from "@mui/icons-material/Event";
@@ -27,13 +30,14 @@ import * as yup from 'yup';
 import PageHeader from "../components/PageHeader";
 import eventHelper from "../../util/eventHelper";
 import { useCreateEventMutation } from "../../features/api";
+import { useHistory } from "react-router";
 
 
 
 const validationSchema = yup.object({
     defaultLesson: yup.boolean(),
     eventType: yup.string()
-        .matches(/(lesson|makeUpLesson|groupLesson|recital|vacation|birthday)/),
+        .matches(/(lesson|make_up_lesson|group_lesson|recital|vacation|birthday)/),
     duration: yup.number()
         .integer(),
     allDay: yup.boolean(),
@@ -63,23 +67,45 @@ const ResponsiveGrid = styled(Grid)(({ theme }) => ({
 }))
 
 
-export default function EventForm({ event }) {
-    const settings = useSelector(state => state.settings.attributes)
-    const teacherId = useSelector(state => state.user.id)
-    const students = useSelector(state => state.students)
-    const [inputValue, setInputValue] = useState('')
+export default function EventForm({ event, defaultLesson=false }) {
+    const settings = useSelector(state => state.settings.attributes);
+    const teacherId = useSelector(state => state.user.id);
+    const students = useSelector(state => state.students);
 
-    const [createEvent] = useCreateEventMutation();
+    const [responseErrors, setResponseErrors] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+    const history = useHistory();
+    const [createEvent, { isLoading, error }] = useCreateEventMutation();
 
-    const initialValues = event ? event : {
+    const renderedErrors = responseErrors.map(error => <Alert key={error} severity="error">{error}</Alert>);
+
+    const initialValues = event ? event
+    // {
+    //     student: students.find(s => s.id == event.id),
+    //     defaultLesson: event.defaultLesson,
+    //     eventType: event.eventType,
+    //     duration: event.recurring? dayjs(event.startTime).diff(event.endTime, 'm') : dayjs(event.start).diff(event.end, 'm'),
+    //     allDay: event.allDay,
+    //     date: event.recurring? findThisWeeksLesson(event.startRecur): event.start ,
+    //     time: event.recurring? event.startTime : dayjs(event.start).format('HH:mm'),
+    //     recurring: event.recurring,
+    //     endRecur: event.endRecur,
+    //     price: event.price,
+    //     allowRegistration: event.allowRegistration,
+    //     makeUpCreditRequired: event.makeUpCreditRequired,
+    //     visible: event.visible, 
+    //     title: event.title,
+    //     location: event.location,
+    // } 
+    : {
         student: null,
-        defaultLesson: false,
+        defaultLesson: defaultLesson,
         eventType: "lesson",
         duration: "",
         allDay: false,
         date: "",
         time: "",
-        recurring: false,
+        recurring: defaultLesson,
         endRecur: "",
         price: settings.defaultLessonPrice,
         allowRegistration: false,
@@ -91,6 +117,12 @@ export default function EventForm({ event }) {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: 10 }}
+                open={isLoading}
+            >
+                <CircularProgress />
+            </Backdrop>
             <PageHeader
                 icon={<EventIcon fontSize="large" sx={{ mr: 1 }} color="primary" />}
                 page="Event Details"
@@ -99,15 +131,25 @@ export default function EventForm({ event }) {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
-                    let eventData = eventHelper({teacherId: teacherId, ...values})
+                    let eventData = eventHelper({ teacherId: teacherId, ...values })
                     createEvent(eventData);
+                    if (error) {
+                        setResponseErrors(prev=> [...prev, error]);
+                    } else {
+                        // setSelectedEvent({});
+                        history.push('/calendar');
+                    }
                 }}
             >
                 {({ values, errors, touched, handleChange, handleSubmit, setFieldValue }) => (
                     <Box component="form" sx={{ textAlign: 'left', display: 'flex', flexFlow: 'column' }}>
                         <Paper sx={{ p: 3, mb: 2, }}>
                             <ResponsiveGrid container spacing={2}>
-
+                                {responseErrors.length > 0 &&
+                                    <Grid item xs={12}>
+                                        {renderedErrors}
+                                    </Grid>
+                                }
                                 <ResponsiveGrid container item xs={12} md={3}>
                                     <Typography variant="button" color="initial">
                                         Student Attendees
@@ -195,8 +237,8 @@ export default function EventForm({ event }) {
                                         sx={{ width: 200 }}
                                     >
                                         <MenuItem value="lesson">Lesson</MenuItem>
-                                        <MenuItem value="groupLesson">Group Lesson</MenuItem>
-                                        <MenuItem value="makeUpLesson">Make-Up Lesson</MenuItem>
+                                        <MenuItem value="group_lesson">Group Lesson</MenuItem>
+                                        <MenuItem value="make_up_lesson">Make-Up Lesson</MenuItem>
                                         <MenuItem value="recital">Recital</MenuItem>
                                         <MenuItem value="vacation">Vacation</MenuItem>
                                     </TextField>
@@ -211,8 +253,10 @@ export default function EventForm({ event }) {
                                     <Field
                                         type='checkbox'
                                         component={Checkbox}
+                                        id="defaultLesson"
                                         name='defaultLesson'
                                         value={values.defaultLesson}
+                                        checked={values.defaultLesson}
                                         onChange={(e) => {
                                             setFieldValue("defaultLesson", e.target.checked);
                                             setFieldValue("recurring", e.target.checked);
@@ -287,52 +331,52 @@ export default function EventForm({ event }) {
 
                                 {!values.allDay && <>
                                     <ResponsiveGrid container item xs={2} md={3}>
-                                    <Typography variant="button" color="initial">
-                                        Time
-                                    </Typography>
-                                </ResponsiveGrid>
-                                <Grid item xs={9} md={3} alignSelf='center'>
-                                    <TextField
-                                        id="time"
-                                        name="time"
-                                        sx={{ width: 170 }}
-                                        disabled={values.allDay ? true : false}
-                                        hiddenLabel
-                                        size="small"
-                                        value={values.time}
-                                        error={touched.time && Boolean(errors.time)}
-                                        helperText={touched.time && errors.time}
-                                        onChange={handleChange}
-                                        inputProps={{ style: { textAlign: 'center' }, }}
-                                        type='time'
-                                    />
-                                </Grid>
+                                        <Typography variant="button" color="initial">
+                                            Time
+                                        </Typography>
+                                    </ResponsiveGrid>
+                                    <Grid item xs={9} md={3} alignSelf='center'>
+                                        <TextField
+                                            id="time"
+                                            name="time"
+                                            sx={{ width: 170 }}
+                                            disabled={values.allDay ? true : false}
+                                            hiddenLabel
+                                            size="small"
+                                            value={values.time}
+                                            error={touched.time && Boolean(errors.time)}
+                                            helperText={touched.time && errors.time}
+                                            onChange={handleChange}
+                                            inputProps={{ style: { textAlign: 'center' }, }}
+                                            type='time'
+                                        />
+                                    </Grid>
 
-                                <ResponsiveGrid container item xs={12} md={2}>
-                                    <Typography variant="button" color="initial">
-                                        Event Duration*
-                                    </Typography>
-                                </ResponsiveGrid>
-                                <Grid item xs={12} md={4} alignSelf='center'>
-                                    <TextField
-                                        id="duration"
-                                        name="duration"
-                                        sx={{ width: 200 }}
-                                        hiddenLabel
-                                        disabled={values.allDay ? true : false}
-                                        size="small"
-                                        value={values.duration}
-                                        error={touched.duration && Boolean(errors.duration)}
-                                        helperText={touched.duration && errors.duration}
-                                        onChange={handleChange}
-                                        inputProps={{ style: { textAlign: 'center' }, }}
-                                        InputProps={{
-                                            inputMode: 'numeric',
-                                            pattern: '[0-9]*',
-                                            endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
-                                        }}
-                                    />
-                                </Grid>
+                                    <ResponsiveGrid container item xs={12} md={2}>
+                                        <Typography variant="button" color="initial">
+                                            Event Duration*
+                                        </Typography>
+                                    </ResponsiveGrid>
+                                    <Grid item xs={12} md={4} alignSelf='center'>
+                                        <TextField
+                                            id="duration"
+                                            name="duration"
+                                            sx={{ width: 200 }}
+                                            hiddenLabel
+                                            disabled={values.allDay ? true : false}
+                                            size="small"
+                                            value={values.duration}
+                                            error={touched.duration && Boolean(errors.duration)}
+                                            helperText={touched.duration && errors.duration}
+                                            onChange={handleChange}
+                                            inputProps={{ style: { textAlign: 'center' }, }}
+                                            InputProps={{
+                                                inputMode: 'numeric',
+                                                pattern: '[0-9]*',
+                                                endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+                                            }}
+                                        />
+                                    </Grid>
                                 </>}
 
                                 <ResponsiveGrid item container xs={7} md={3} alignSelf='center'>
@@ -347,10 +391,11 @@ export default function EventForm({ event }) {
                                         name='recurring'
                                         disabled={values.defaultLesson ? true : false}
                                         value={values.recurring}
+                                        checked={values.recurring}
                                         onChange={() => setFieldValue("recurring", !values.recurring)}
                                     />
                                 </Grid>
-                             
+
                                 {values.recurring && <>
                                     <ResponsiveGrid container item xs={2} md={3}>
                                         <Typography variant="button" color="initial">
@@ -459,7 +504,7 @@ export default function EventForm({ event }) {
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={12} sx={{textAlign:'right'}}>
+                                <Grid item xs={12} sx={{ textAlign: 'right' }}>
                                     <Typography variant="caption" color="secondary" >
                                         *required field
                                     </Typography>

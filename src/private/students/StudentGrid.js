@@ -7,20 +7,20 @@ import EditIcon from '@mui/icons-material/Edit'
 import { useSelector } from 'react-redux'
 import { Tooltip, IconButton } from '@mui/material'
 import * as dayjs from 'dayjs'
-import { useFetchStudentsQuery } from '../../features/api'
+
 import { useCallback } from 'react'
 
 
 export default function StudentGrid({ search, view, setSelection }) {
-    const { error, isLoading } = useFetchStudentsQuery(undefined, {selectFromResult: () => ({})});
-
     const students = useSelector(state => state.students)
     const editUser = useCallback((id)=>()=>{
         console.log('edit', id)
     },[]);
+
     const escapeRegExp = (value) => {
         return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     }
+
     const searchRegex = new RegExp(escapeRegExp(search), 'i');
     const updatedRows = search.length > 0 ? students.filter(row => Object.keys(row).some(col => searchRegex.test(row[col]))) : students
 
@@ -192,8 +192,6 @@ export default function StudentGrid({ search, view, setSelection }) {
 
     return (
         <DataGrid
-            error={error}
-            loading={isLoading}
             rows={updatedRows}
             columns={columns}
             components={{

@@ -4,8 +4,13 @@ import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid';
 
 import PageHeader from "./components/PageHeader";
+import { useFetchStudentsQuery } from "../features/api";
+import { useFetchEventsQuery } from '../features/api';
 
 export default function Dashboard() {
+    useFetchEventsQuery(undefined, {selectFromResult: () => ({})});
+    useFetchStudentsQuery(undefined, {selectFromResult: () => ({})});
+    
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <PageHeader

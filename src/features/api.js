@@ -61,6 +61,25 @@ export const api = createApi({
                 method: 'PATCH',
                 body: preference
             })
+        }),
+        fetchEvents:builder.query({
+            query:()=>({
+                url: 'events'
+            })
+        }),
+        createEvent: builder.mutation({
+            query:(event) => ({
+                url:'events',
+                method: 'POST',
+                body: event
+            })
+        }),
+        updateEvent: builder.mutation({
+            query:({id, ...event}) => ({
+                url:`events/${id}`,
+                method: 'PATCH',
+                body:event
+            })
         })
     })
 })
@@ -73,7 +92,10 @@ export const {
     useIsLoggedInMutation, 
     useFetchStudentsQuery,
     useUpdateStudentsMutation,
-    useUpdateSettingsMutation
+    useUpdateSettingsMutation,
+    useFetchEventsQuery,
+    useCreateEventMutation,
+    useUpdateEventMutation
     } = api;
 
 export const { endpoints: { 
@@ -83,5 +105,8 @@ export const { endpoints: {
     isLoggedIn,
     fetchStudents,
     updateStudents,
-    updateSettings
+    updateSettings,
+    fetchEvents,
+    createEvent,
+    updateEvent
     } } = api;

@@ -26,12 +26,13 @@ import * as yup from 'yup';
 
 import PageHeader from "../components/PageHeader";
 import eventHelper from "../../util/eventHelper";
+import { useCreateEventMutation } from "../../features/api";
 
 
 
 const validationSchema = yup.object({
     defaultLesson: yup.boolean(),
-    type: yup.string()
+    eventType: yup.string()
         .matches(/(lesson|makeUpLesson|groupLesson|recital|vacation|birthday)/),
     duration: yup.number()
         .integer(),
@@ -68,10 +69,12 @@ export default function EventForm({ event }) {
     const students = useSelector(state => state.students)
     const [inputValue, setInputValue] = useState('')
 
+    const [createEvent] = useCreateEventMutation();
+
     const initialValues = event ? event : {
         student: null,
         defaultLesson: false,
-        type: "lesson",
+        eventType: "lesson",
         duration: "",
         allDay: false,
         date: "",
@@ -96,8 +99,8 @@ export default function EventForm({ event }) {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
-                    let formData = {teacherId: teacherId, ...values}
-                    console.log(eventHelper(formData));
+                    let eventData = eventHelper({teacherId: teacherId, ...values})
+                    createEvent(eventData);
                 }}
             >
                 {({ values, errors, touched, handleChange, handleSubmit, setFieldValue }) => (
@@ -177,16 +180,16 @@ export default function EventForm({ event }) {
                                         Event Type*
                                     </Typography>
                                 </ResponsiveGrid>
-                                <Grid item xs={12} md={3} alignSelf='center'>
+                                <Grid item xs={12} md={4} alignSelf='center'>
                                     <TextField
-                                        id="type"
-                                        name="type"
+                                        id="eventType"
+                                        name="eventType"
                                         label=""
                                         select
                                         size="small"
-                                        value={values.type}
-                                        error={touched.type && Boolean(errors.type)}
-                                        helperText={touched.type && errors.type}
+                                        value={values.eventType}
+                                        error={touched.eventType && Boolean(errors.eventType)}
+                                        helperText={touched.eventType && errors.eventType}
                                         onChange={handleChange}
                                         aria-label="event-type"
                                         sx={{ width: 200 }}
@@ -204,15 +207,15 @@ export default function EventForm({ event }) {
                                         Default Lesson
                                     </Typography>
                                 </ResponsiveGrid>
-                                <Grid item xs={9} md={4} alignSelf='center'>
+                                <Grid item xs={9} md={3} alignSelf='center'>
                                     <Field
                                         type='checkbox'
                                         component={Checkbox}
                                         name='defaultLesson'
                                         value={values.defaultLesson}
-                                        onChange={() => {
-                                            setFieldValue("defaultLesson", !values.defaultLesson)
-                                            setFieldValue("recurring", !values.recurring)
+                                        onChange={(e) => {
+                                            setFieldValue("defaultLesson", e.target.checked);
+                                            setFieldValue("recurring", e.target.checked);
                                         }}
                                     />
                                 </Grid>
@@ -246,12 +249,71 @@ export default function EventForm({ event }) {
                                     <Divider />
                                 </Grid>
 
-                                <ResponsiveGrid container item xs={12} md={3}>
+                                <ResponsiveGrid container item xs={2} md={3}>
+                                    <Typography variant="button" color="initial" >
+                                        Date*
+                                    </Typography>
+                                </ResponsiveGrid>
+                                <Grid item xs={9} md={3} alignSelf='center'>
+                                    <TextField
+                                        id="date"
+                                        name="date"
+                                        sx={{ width: 170 }}
+                                        hiddenLabel
+                                        size="small"
+                                        value={values.date}
+                                        error={touched.date && Boolean(errors.date)}
+                                        helperText={touched.date && errors.date}
+                                        onChange={handleChange}
+                                        inputProps={{ style: { textAlign: 'center' }, }}
+                                        type='date'
+                                    />
+                                </Grid>
+
+                                <ResponsiveGrid item container xs={4} md={2} alignSelf='center'>
+                                    <Typography variant="button" color="initial">
+                                        All-Day
+                                    </Typography>
+                                </ResponsiveGrid>
+                                <Grid item xs={8} md={3} alignSelf='center'>
+                                    <Field
+                                        type='checkbox'
+                                        component={Checkbox}
+                                        name='allDay'
+                                        value={values.allDay}
+                                        onChange={() => setFieldValue("allDay", !values.allDay)}
+                                    />
+                                </Grid>
+
+                                {!values.allDay && <>
+                                    <ResponsiveGrid container item xs={2} md={3}>
+                                    <Typography variant="button" color="initial">
+                                        Time
+                                    </Typography>
+                                </ResponsiveGrid>
+                                <Grid item xs={9} md={3} alignSelf='center'>
+                                    <TextField
+                                        id="time"
+                                        name="time"
+                                        sx={{ width: 170 }}
+                                        disabled={values.allDay ? true : false}
+                                        hiddenLabel
+                                        size="small"
+                                        value={values.time}
+                                        error={touched.time && Boolean(errors.time)}
+                                        helperText={touched.time && errors.time}
+                                        onChange={handleChange}
+                                        inputProps={{ style: { textAlign: 'center' }, }}
+                                        type='time'
+                                    />
+                                </Grid>
+
+                                <ResponsiveGrid container item xs={12} md={2}>
                                     <Typography variant="button" color="initial">
                                         Event Duration*
                                     </Typography>
                                 </ResponsiveGrid>
-                                <Grid item xs={12} md={3} alignSelf='center'>
+                                <Grid item xs={12} md={4} alignSelf='center'>
                                     <TextField
                                         id="duration"
                                         name="duration"
@@ -271,66 +333,8 @@ export default function EventForm({ event }) {
                                         }}
                                     />
                                 </Grid>
+                                </>}
 
-                                <ResponsiveGrid item container xs={4} md={2} alignSelf='center'>
-                                    <Typography variant="button" color="initial">
-                                        All-Day
-                                    </Typography>
-                                </ResponsiveGrid>
-                                <Grid item xs={8} md={3} alignSelf='center'>
-                                    <Field
-                                        type='checkbox'
-                                        component={Checkbox}
-                                        name='allDay'
-                                        value={values.allDay}
-                                        onChange={() => setFieldValue("allDay", !values.allDay)}
-                                    />
-                                </Grid>
-
-                                <ResponsiveGrid container item xs={2} md={3}>
-                                    <Typography variant="button" color="initial" >
-                                        Date*
-                                    </Typography>
-                                </ResponsiveGrid>
-                                <Grid item xs={9} md={9} alignSelf='center'>
-                                    <TextField
-                                        id="date"
-                                        name="date"
-                                        sx={{ width: 170 }}
-                                        hiddenLabel
-                                        size="small"
-                                        value={values.date}
-                                        error={touched.date && Boolean(errors.date)}
-                                        helperText={touched.date && errors.date}
-                                        onChange={handleChange}
-                                        inputProps={{ style: { textAlign: 'center' }, }}
-                                        type='date'
-                                    />
-                                </Grid>
-
-                                <ResponsiveGrid container item xs={2} md={3}>
-                                    <Typography variant="button" color="initial">
-                                        Time
-                                    </Typography>
-                                </ResponsiveGrid>
-                                <Grid item xs={9} md={9} alignSelf='center'>
-                                    <TextField
-                                        id="time"
-                                        name="time"
-                                        sx={{ width: 170 }}
-                                        disabled={values.allDay ? true : false}
-                                        hiddenLabel
-                                        size="small"
-                                        value={values.time}
-                                        error={touched.time && Boolean(errors.time)}
-                                        helperText={touched.time && errors.time}
-                                        onChange={handleChange}
-                                        inputProps={{ style: { textAlign: 'center' }, }}
-                                        type='time'
-                                    />
-                                </Grid>
-
-                                {(values.defaultLesson === false) && <>
                                 <ResponsiveGrid item container xs={7} md={3} alignSelf='center'>
                                     <Typography variant="button" color="initial">
                                         Recurring Event
@@ -341,12 +345,13 @@ export default function EventForm({ event }) {
                                         type='checkbox'
                                         component={Checkbox}
                                         name='recurring'
+                                        disabled={values.defaultLesson ? true : false}
                                         value={values.recurring}
                                         onChange={() => setFieldValue("recurring", !values.recurring)}
                                     />
                                 </Grid>
-                                </>}
-                                {(values.recurring ||values.defaultLesson) && <>
+                             
+                                {values.recurring && <>
                                     <ResponsiveGrid container item xs={2} md={3}>
                                         <Typography variant="button" color="initial">
                                             End Recur

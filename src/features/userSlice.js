@@ -25,7 +25,8 @@ export const slice = createSlice({
             .addMatcher(api.endpoints.login.matchFulfilled, (state, action) => {
                 console.log('fulfilled-login', action);
                 const { id, attributes:{ firstName, lastName, email, address, phone, role }} = action.payload.data;
-                Object.assign(state, { id, firstName, lastName, email, address, phone, role })
+                const {name} = action.payload.data.attributes.studio.data.attributes;
+                Object.assign(state, { id, firstName, lastName, email, address, phone, role, studio:{name}});
             })
             .addMatcher(api.endpoints.login.matchRejected, (state, action) => {
                 console.log('rejected', action);
@@ -37,12 +38,14 @@ export const slice = createSlice({
             .addMatcher(api.endpoints.isLoggedIn.matchFulfilled, (state, action) => {
                 console.log('fulfilled-session recovered', action);
                 const { id, attributes:{ firstName, lastName, email, address, phone, role }} = action.payload.data;
-                Object.assign(state, { id, firstName, lastName, email, address, phone, role })
+                const {name} = action.payload.data.attributes.studio.data.attributes;
+                Object.assign(state, { id, firstName, lastName, email, address, phone, role, studio:{name} });
             })
             .addMatcher(api.endpoints.signup.matchFulfilled, (state, action) => {
                 console.log('fulfilled-signed up', action);
                 const { id, attributes:{ firstName, lastName, email, address, phone, role }} = action.payload.data;
-                Object.assign(state, { id, firstName, lastName, email, address, phone, role })
+                const {name} = action.payload.data.attributes.studio.data.attributes;
+                Object.assign(state, { id, firstName, lastName, email, address, phone, role, studio:{name} });
             })
     }
 })

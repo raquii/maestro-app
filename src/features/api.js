@@ -48,6 +48,13 @@ export const api = createApi({
                 url: 'students',
             }),
         }),
+        updateStudent: builder.mutation({
+            query: ({id, ...student}) => ({
+                url: `students/${id}`,
+                method: 'PATCH',
+                body: student
+            }),
+        }),
         updateStudents: builder.mutation({
             query: (students) => ({
                 url: 'students/bulk_update',
@@ -80,7 +87,35 @@ export const api = createApi({
                 method: 'PATCH',
                 body:event
             })
-        })
+        }),
+        deleteEvent: builder.mutation({
+            query:({id, ...event}) => ({
+                url:`events/${id}`,
+                method: 'DELETE',
+                body:event
+            })
+        }),
+        createStudent: builder.mutation({
+            query:(student) => ({
+                url:'students',
+                method: 'POST',
+                body:student
+            })
+        }),
+        deleteStudent: builder.mutation({
+            query:({id, ...student}) => ({
+                url:`students/${id}`,
+                method: 'DELETE',
+                body:student
+            })
+        }),
+        deleteStudents: builder.mutation({
+            query: (students) => ({
+                url: 'students/bulk_destroy',
+                method: 'DELETE',
+                body: students,
+            }),
+        }),
     })
 })
 
@@ -91,11 +126,15 @@ export const {
     useSignupMutation,
     useIsLoggedInMutation, 
     useFetchStudentsQuery,
+    useUpdateStudentMutation,
     useUpdateStudentsMutation,
     useUpdateSettingsMutation,
     useFetchEventsQuery,
     useCreateEventMutation,
-    useUpdateEventMutation
+    useUpdateEventMutation,
+    useCreateStudentMutation,
+    useDeleteStudentMutation,
+    useDeleteStudentsMutation
     } = api;
 
 export const { endpoints: { 
@@ -104,9 +143,13 @@ export const { endpoints: {
     signup,
     isLoggedIn,
     fetchStudents,
+    updateStudent,
     updateStudents,
     updateSettings,
     fetchEvents,
     createEvent,
-    updateEvent
+    updateEvent,
+    createStudent,
+    deleteStudent,
+    deleteStudents
     } } = api;

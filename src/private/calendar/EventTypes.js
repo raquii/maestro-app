@@ -1,90 +1,133 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
-import { useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Grid, Button, Divider, Typography } from "@mui/material";
+import { Formik } from 'formik';
+import { useSelector } from "react-redux";
+import { useUpdateSettingsMutation } from "../../features/api";
 
 export default function EventTypes({ closeMenu, open }) {
-    const [colors, setColors] = useState({
-        lesson: "#b5b5da",
-        groupLesson: "#33cfbc",
-        recital: "#f9ac1f",
-        makeUpLesson: "#ee7d68",
-        vacation: "#b0d9f4",
-        birthday: "#b95b67"
-    })
-
-    function handleChange(e) {
-        const key = e.target.name
-        const value = e.target.value
-        setColors({ ...colors, [key]: value })
-    }
-
-    function handleClose() {
-        console.log(colors)
-        closeMenu()
-    }
+    const settings = useSelector(state => state.settings.attributes);
+    const id = useSelector(state => state.settings.id);
+    const [updateSettings] = useUpdateSettingsMutation();
+    
+    const initialValues = {
+        id: id,
+        lessonColor: settings.lessonColor,
+        groupLessonColor: settings.groupLessonColor,
+        recitalColor: settings.recitalColor,
+        makeUpLessonColor: settings.makeUpLessonColor,
+        vacationColor: settings.vacationColor,
+        birthdayColor: settings.birthdayColor,
+    };
 
     return (
-        <Dialog
-            maxWidth='sm'
-            fullWidth
-            open={open}
-        >
+        <Dialog open={open}>
             <DialogTitle id="alert-confirm-send-login-emails">
                 Event Types
             </DialogTitle>
-            <DialogContent>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Event Type</TableCell>
-                                <TableCell>Color</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>Lesson</TableCell>
-                                <TableCell><input type='color' name="lesson" value={colors.lesson} onChange={handleChange} /></TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Make-Up Lesson</TableCell>
-                                <TableCell><input type='color' name="makeupUpLesson" value={colors.makeUpLesson} onChange={handleChange} /></TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Group Lesson</TableCell>
-                                <TableCell><input type='color' name="groupLesson" value={colors.groupLesson} onChange={handleChange} /></TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Recital</TableCell>
-                                <TableCell><input type='color' name="recital" value={colors.recital} onChange={handleChange} /></TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Vacation</TableCell>
-                                <TableCell><input type='color' name="vacation" value={colors.vacation} onChange={handleChange} /></TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Birthday</TableCell>
-                                <TableCell><input type='color' name="birthday" value={colors.birthday} onChange={handleChange} /></TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </DialogContent>
+            <Formik
+                initialValues={initialValues}
+                onSubmit={(values) => {
+                    console.log(values)
+                    updateSettings(values);
+                }}
+            >{({ values, handleChange, handleSubmit }) => (<>
+                <DialogContent>
+                    
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <Typography variant="button" component="p">Event Type</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                        <Typography variant="button" component="p">Color</Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            Lesson
+                        </Grid>
+                        <Grid item xs={6}>
+                            <input className="color-input" type='color' name="lessonColor" id="lessonColor" value={values.lessonColor} onChange={handleChange}/>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            Make-Up Lesson
+                        </Grid>
+                        <Grid item xs={6}>
+                            <input className="color-input" type='color' name="makeupUpLessonColor" id="makeupUpLessonColor" value={values.makeUpLessonColor} onChange={handleChange}/>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            Group Lesson
+                        </Grid>
+                        <Grid item xs={6}>
+                            <input className="color-input" type='color' name="groupLessonColor" id="groupLessonColor" value={values.groupLessonColor} onChange={handleChange}/>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            Recital
+                        </Grid>
+                        <Grid item xs={6}>
+                            <input className="color-input" type='color' name="recitalColor" id="recitalColor" value={values.recitalColor} onChange={handleChange}/>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            Vacation
+                        </Grid>
+                        <Grid item xs={6}>
+                            <input className="color-input" type='color' name="vacationColor" id="vacationColor" value={values.vacationColor} onChange={handleChange}/>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            Birthday
+                        </Grid>
+                        <Grid item xs={6}>
+                            <input className="color-input" type='color' name="birthdayColor" id="birthdayColor" value={values.birthdayColor} onChange={handleChange}/>
+                        </Grid>
+
+                    </Grid>
+                   
+                </DialogContent>
                 <DialogActions>
-                <Button
-                    onClick={closeMenu}
-                    variant='outlined'
-                    color="secondary"
-                >
-                    Cancel
-                </Button>
-                <Button
-                    onClick={handleClose}
-                    variant='contained'
-                    color="primary"
-                >
-                    Save
-                </Button>
+                    <Button
+                        onClick={closeMenu}
+                        variant='outlined'
+                        color="secondary"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        variant='contained'
+                        color="primary"
+                        type="submit"
+                    >
+                        Save
+                    </Button>
                 </DialogActions>
+            </>)}
+            </Formik>
         </Dialog>
     )
 }

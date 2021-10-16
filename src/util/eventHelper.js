@@ -22,7 +22,7 @@ export default function eventHelper(data){
         return {...allKeys, startTime: data.time, endTime: endTime, startRecur:data.date, endRecur: data.endRecur, daysOfWeek: dayjs(data.date).format('d') };
     }else{
         let end = calculateDuration(data.date, data.time, data.duration);
-        return {...allKeys, start: dayjs(`${data.date}T${data.time}Z`).toISOString(), end:end};
+        return {...allKeys, start: dayjs(`${data.date}T${data.time}`).toISOString(), end:end};
     };
 };
 

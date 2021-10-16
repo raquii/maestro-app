@@ -20,18 +20,18 @@ import {
     CircularProgress,
     Alert
 } from "@mui/material"
-import { styled } from '@mui/material/styles';
+
 import EventIcon from "@mui/icons-material/Event";
 import SaveIcon from '@mui/icons-material/Save';
 import { useSelector } from "react-redux";
 import { Field, Formik } from 'formik';
+import { useHistory } from "react-router";
 import * as yup from 'yup';
 
 import PageHeader from "../components/PageHeader";
 import eventHelper from "../../util/eventHelper";
 import { useCreateEventMutation } from "../../features/api";
-import { useHistory } from "react-router";
-
+import ResponsiveGrid from "../components/ResponsiveGrid";
 
 
 const validationSchema = yup.object({
@@ -57,15 +57,6 @@ const validationSchema = yup.object({
         .max(50, "Must be less than 50 characters"),
     location: yup.string(),
 })
-
-const ResponsiveGrid = styled(Grid)(({ theme }) => ({
-    alignSelf: 'center',
-    [theme.breakpoints.down('sm')]: {
-        justifyContent: 'center',
-        textAlign: 'center'
-    },
-}))
-
 
 export default function EventForm({ event, defaultLesson=false }) {
     const settings = useSelector(state => state.settings.attributes);

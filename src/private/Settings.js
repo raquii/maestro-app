@@ -1,21 +1,20 @@
 import {
-    Container,
     Box,
-    Paper,
+    Button,
+    Container,
+    Divider,
     Grid,
-    TextField,
     FormControl,
     FormControlLabel,
     FormLabel,
-    RadioGroup,
-    Radio,
-    MenuItem,
     InputAdornment,
+    MenuItem,
+    Paper,
+    Radio,
+    RadioGroup,
+    TextField,
     Typography,
-    Button,
-    Divider,
 } from "@mui/material"
-import { styled } from '@mui/material/styles';
 import SettingsIcon from "@mui/icons-material/Settings";
 import SaveIcon from '@mui/icons-material/Save';
 import { useSelector } from "react-redux";
@@ -24,6 +23,7 @@ import * as yup from 'yup';
 
 import { useUpdateSettingsMutation } from "../features/api";
 import PageHeader from "./components/PageHeader";
+import ResponsiveGrid from "./components/ResponsiveGrid";
 
 
 const validationSchema = yup.object({
@@ -70,13 +70,6 @@ const validationSchema = yup.object({
         .nullable(),
     studentsCanEditProfile: yup.boolean(),
 })
-
-const ResponsiveGrid = styled(Grid)(({ theme }) => ({
-    [theme.breakpoints.down('sm')]: {
-        justifyContent: 'center',
-        textAlign: 'center'
-    },
-}))
 
 export default function Settings() {
     const settings = useSelector(state => state.settings.attributes)

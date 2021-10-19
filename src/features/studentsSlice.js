@@ -11,101 +11,34 @@ export const slice = createSlice({
         builder
             .addMatcher(api.endpoints.login.matchFulfilled, (state, action) => {
                 console.log('fulfilled: login - students', action);
-                return action.payload.data.attributes.students.data.map(s => ({
-                    id: s.id,
-                    firstName: s.attributes.firstName,
-                    lastName: s.attributes.lastName,
-                    phone: s.attributes.phone,
-                    email: s.attributes.email,
-                    address: s.attributes.address,
-                    studentProfile: {
-                        adult: s.attributes.studentProfile.data.attributes.adult,
-                        grade: s.attributes.studentProfile.data.attributes.grade,
-                        status: s.attributes.studentProfile.data.attributes.status,
-                        gender: s.attributes.studentProfile.data.attributes.gender,
-                        defaultLessonPrice: s.attributes.studentProfile.data.attributes.defaultLessonPrice,
-                        defaultLessonDuration: s.attributes.studentProfile.data.attributes.defaultLessonDuration,
-                        makeUpCredits: s.attributes.studentProfile.data.attributes.makeUpCredits,
-                        birthday: s.attributes.studentProfile.data.attributes.birthday,
-                        id: s.attributes.studentProfile.data.id,
-                    }
-                }))
-               
+                return action.payload.data.attributes.students.data.map(s=> ({id: s.id, ...s.attributes})); 
             })
             .addMatcher(api.endpoints.isLoggedIn.matchFulfilled, (state, action) => {
                 console.log('fulfilled: isLoggedIn - student', action);
-                return action.payload.data.attributes.students.data.map(s => ({
-                    id: s.id,
-                    firstName: s.attributes.firstName,
-                    lastName: s.attributes.lastName,
-                    phone: s.attributes.phone,
-                    email: s.attributes.email,
-                    address: s.attributes.address,
-                    studentProfile: {
-                        adult: s.attributes.studentProfile.data.attributes.adult,
-                        grade: s.attributes.studentProfile.data.attributes.grade,
-                        status: s.attributes.studentProfile.data.attributes.status,
-                        gender: s.attributes.studentProfile.data.attributes.gender,
-                        defaultLessonPrice: s.attributes.studentProfile.data.attributes.defaultLessonPrice,
-                        defaultLessonDuration: s.attributes.studentProfile.data.attributes.defaultLessonDuration,
-                        makeUpCredits: s.attributes.studentProfile.data.attributes.makeUpCredits,
-                        birthday: s.attributes.studentProfile.data.attributes.birthday,
-                        id: s.attributes.studentProfile.data.id,
-                    }
-                }))
+                return action.payload.data.attributes.students.data.map(s=> ({id: s.id, ...s.attributes})); 
               
             })
-            .addMatcher(api.endpoints.fetchStudents.matchFulfilled, (state, action) => {
-                console.log('fulfilled: fetchStudents', action,);
-                const students = action.payload.data.map(s => ({
-                    id: s.id,
-                    firstName: s.attributes.firstName,
-                    lastName: s.attributes.lastName,
-                    phone: s.attributes.phone,
-                    email: s.attributes.email,
-                    address: s.attributes.address,
-                    studentProfile: {
-                        adult: s.attributes.studentProfile.data.attributes.adult,
-                        grade: s.attributes.studentProfile.data.attributes.grade,
-                        status: s.attributes.studentProfile.data.attributes.status,
-                        gender: s.attributes.studentProfile.data.attributes.gender,
-                        defaultLessonPrice: s.attributes.studentProfile.data.attributes.defaultLessonPrice,
-                        defaultLessonDuration: s.attributes.studentProfile.data.attributes.defaultLessonDuration,
-                        makeUpCredits: s.attributes.studentProfile.data.attributes.makeUpCredits,
-                        birthday: s.attributes.studentProfile.data.attributes.birthday,
-                        id: s.attributes.studentProfile.data.id,
-                    }
-
-
-                }))
-
-                return students
+            .addMatcher(api.endpoints.createStudent.matchFulfilled, (state, action) => {
+                console.log('fulfilled: createStudent', action,);
+                const {id, attributes} = action.payload.data
+                state.push({id:id, ...attributes})
+            })
+            .addMatcher(api.endpoints.deleteStudent.matchFulfilled, (state, action) => {
+                console.log('fulfilled: deleteStudent', action,);
+                return state.filter(s => s.id !== action.payload.id);
+            })
+            .addMatcher(api.endpoints.deleteStudents.matchFulfilled, (state, action) => {
+                console.log('fulfilled: deleteStudents', action,);
+                return action.payload.data.map(s=> ({id: s.id, ...s.attributes}));
+            })
+            .addMatcher(api.endpoints.updateStudent.matchFulfilled, (state, action) => {
+                console.log('fulfilled: updateStudent', state, action);
+                return state.map(s=> s.id===action.payload.data.id ? {id: action.payload.data.id, ...action.payload.data.attributes} : s);
             })
             .addMatcher(api.endpoints.updateStudents.matchFulfilled, (state, action) => {
-                console.log('fulfilled: updateStudents', state, action.payload.data);
-                const updatedStudents = action.payload.data.map(s => ({
-                    id: s.id,
-                    firstName: s.attributes.firstName,
-                    lastName: s.attributes.lastName,
-                    phone: s.attributes.phone,
-                    email: s.attributes.email,
-                    address: s.attributes.address,
-                    studentProfile: {
-                        adult: s.attributes.studentProfile.data.attributes.adult,
-                        grade: s.attributes.studentProfile.data.attributes.grade,
-                        status: s.attributes.studentProfile.data.attributes.status,
-                        gender: s.attributes.studentProfile.data.attributes.gender,
-                        defaultLessonPrice: s.attributes.studentProfile.data.attributes.defaultLessonPrice,
-                        defaultLessonDuration: s.attributes.studentProfile.data.attributes.defaultLessonDuration,
-                        makeUpCredits: s.attributes.studentProfile.data.attributes.makeUpCredits,
-                        birthday: s.attributes.studentProfile.data.attributes.birthday,
-                        id: s.attributes.studentProfile.data.id,
-                    }
-                }))
-                const updatedState = state.map(student => updatedStudents.find(s => s.id === student.id) || student)
-
-                return updatedState;
-
+                console.log('fulfilled: updateStudents', state, action);
+                const updatedStudents = action.payload.data.map(s=> ({id: s.id, ...s.attributes}));
+                return state.map(student => updatedStudents.find(s => s.id === student.id) || student);
             })
             .addMatcher(api.endpoints.logout.matchFulfilled, (state) => {
                 console.log('fulfilled-logout', state);

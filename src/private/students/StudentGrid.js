@@ -70,9 +70,9 @@ export default function StudentGrid({ search, view, setSelection }) {
             hide: true,
             valueGetter: (params)=>{
                 let result = ""
-                if(params.row.studentProfile.birthday){
+                if(params.row.birthday){
                     let today = dayjs()
-                    let birthday = dayjs(params.row.studentProfile.birthday)
+                    let birthday = dayjs(params.row.birthday)
                     result = today.diff(birthday, 'year')
                 }
                 return result
@@ -83,40 +83,16 @@ export default function StudentGrid({ search, view, setSelection }) {
             field: "birthday",
             headerName: 'Birthday',
             hide: true,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.birthday){            
-                    result = dayjs(params.row.studentProfile.birthday).format("MM-DD-YYYY")
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
         },
         {
             field: "defaultLessonDuration",
             headerName: 'Lesson Duration',
             hide: true,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.defaultLessonDuration){            
-                    result = params.row.studentProfile.defaultLessonDuration
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
         },
         {
             field: "defaultLessonPrice",
             headerName: 'Default Price',
             hide: true,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.defaultLessonPrice){            
-                    result = params.row.studentProfile.defaultLessonPrice
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
         },
         {
             field: "email",
@@ -139,54 +115,21 @@ export default function StudentGrid({ search, view, setSelection }) {
             field: "gender",
             headerName: 'Gender',
             hide: true,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.gender){            
-                    result = params.row.studentProfile.gender
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
         },
         {
             field: "school",
             headerName: 'School',
             hide: true,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.school){            
-                    result = params.row.studentProfile.school
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
-    
         },
         {
             field: "makeUpCredits",
             headerName: 'Make-Up Credits',
             hide: false,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.makeUpCredits){            
-                    result = params.row.studentProfile.makeUpCredits
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
         },
         {
             field: "status",
             headerName: 'Status',
             hide: false,
-            valueGetter: (params)=>{
-                let result = ""
-                if(params.row.studentProfile.status){            
-                    result = params.row.studentProfile.status
-                }
-                return result
-            },
-            sortComparator: (v1, v2) => v1.toString().localeCompare(v2.toString())
         },
     ]
 

@@ -16,7 +16,7 @@ export default function Dashboard() {
     const events = useSelector(state => state.events);
     const nextLesson = nextLessonHelper(events);
     const students = useSelector(state=>state.students);
-    const activeStudentCount = students.filter(s=> s.studentProfile.status ==="active").length;
+    const activeStudentCount = students.filter(s=> s.status ==="active").length;
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -97,7 +97,7 @@ export default function Dashboard() {
                             <Divider />
                             </Grid>
                             <Grid item xs={12}>
-                            <Typography sx={{ mt: 1 }} variant="body2">{nextLesson.title} <br />{dayjs(nextLesson.next).format('ddd, MMM D, YYYY h:mm A')}</Typography>
+                            <Typography sx={{ mt: 1 }} variant="body2">{events.length>0 ? nextLesson.title: "No events to display."} <br /> {events.length>0 && dayjs(nextLesson.next).format('ddd, MMM D, YYYY h:mm A') }</Typography>
                             </Grid>
                         </Grid>
                     </Paper>

@@ -69,6 +69,13 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
         menu: -1
     })
 
+    function resetPopover(){
+        setPopover({
+            anchor: null,
+            menu: -1
+        })
+    }
+
     function handleViewMenuClick(e) {
         setPopover({ anchor: null, menu: -1 })
         setView(e.target.id)
@@ -204,11 +211,11 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         <MenuItem id='resetMUC' onClick={handleConfirmationDialogues} >Reset Make-Up Credits</MenuItem>
                         <MenuItem id='deleteStudents' onClick={handleConfirmationDialogues}>Delete Selected Students</MenuItem>
                         <Divider />
-                        <MenuItem onClick={()=>handleStatusChange('active')}>Set Status to Active</MenuItem>
-                        <MenuItem onClick={()=>handleStatusChange('trial')}>Set Status to Trial</MenuItem>
-                        <MenuItem onClick={()=>handleStatusChange('inactive')}>Set Status to Inactive</MenuItem>
-                        <MenuItem onClick={()=>handleStatusChange('waiting')}>Set Status to Waiting</MenuItem>
-                        <MenuItem onClick={()=>handleStatusChange('lead')}>Set Status to Lead</MenuItem>
+                        <MenuItem onClick={()=>{handleStatusChange('active'); resetPopover()}}>Set Status to Active</MenuItem>
+                        <MenuItem onClick={()=>{handleStatusChange('trial'); resetPopover()}}>Set Status to Trial</MenuItem>
+                        <MenuItem onClick={()=>{handleStatusChange('inactive'); resetPopover()}}>Set Status to Inactive</MenuItem>
+                        <MenuItem onClick={()=>{handleStatusChange('waiting'); resetPopover()}}>Set Status to Waiting</MenuItem>
+                        <MenuItem onClick={()=>{handleStatusChange('lead'); resetPopover()}}>Set Status to Lead</MenuItem>
                     </MenuList>
                 }
                 {popover.menu === 3 &&

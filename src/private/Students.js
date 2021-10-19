@@ -45,6 +45,7 @@ export default function Students() {
 
     function handleConfirmationDialogues(e) {
         const type = selection.length > 0 ? e.target.id : 'noSelection'
+
         switch (type) {
             case 'noSelection':
                 setDisplayConfirmation(state => ({ ...state, noSelection: true }))
@@ -73,18 +74,16 @@ export default function Students() {
         }
     }
 
-    async function handleStatusChange(newStatus){
-        console.log(selection, newStatus)
-        const studentsToUpdate = {ids: selection.map(s=>(s.id)), profileIds:selection.map(s=>(s.studentProfile.id)),status: newStatus }
-        // const studentsToUpdate = selection.map(s=>({...s, studentProfileAttributes:{...s.studentProfile, status: newStatus}}))
+    async function handleStatusChange(newStatus) {
+        const studentsToUpdate = { ids: selection.map(s => (s.id)), status: newStatus }
         console.log(studentsToUpdate)
-        
-        if(selection.length === 0){
+
+        if (selection.length === 0) {
             handleConfirmationDialogues()
-        }else{
-           try{ 
-               await updateStudents({students: studentsToUpdate}).unwrap()
-            }catch(err){
+        } else {
+            try {
+                await updateStudents(studentsToUpdate).unwrap()
+            } catch (err) {
                 console.log(err)
             }
 
@@ -117,8 +116,9 @@ export default function Students() {
             />}
             {displayConfirmation.delete && <DeleteSelectedConfirmation
                 open={displayConfirmation.delete}
-                handleClose={handleConfirmationDialogues}
+                closeMenu={setDisplayConfirmation}
                 selected={selection}
+                setSelection={setSelection}
             />}
             <Switch>
                 <Route path={`${match.path}/new-student`}>
@@ -148,7 +148,7 @@ export default function Students() {
                                     setEmailRecipients={setEmailDialogue}
                                     handleConfirmationDialogues={handleConfirmationDialogues}
                                     handleStatusChange={handleStatusChange}
-                               />
+                                />
                             </Paper>
                         </Grid>
                         <Grid item xs={12}>

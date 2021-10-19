@@ -7,6 +7,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState } from 'react';
 
+import { useDeleteStudentsMutation } from '../../features/api';
+
 export const NoSelectedStudents = ({ open, handleClose }) => {
     const handleOkClick = () => {
         handleClose({
@@ -136,8 +138,9 @@ export const ResetMakeUpCreditsConfirmation = ({ open, handleClose, selected }) 
     )
 }
 
-export const DeleteSelectedConfirmation = ({ open, handleClose, selected }) => {
+export const DeleteSelectedConfirmation = ({ open, closeMenu, selected, setSelection }) => {
     const [countdown, setCountdown] = useState(3);
+    const [deleteStudents] = useDeleteStudentsMutation();
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -154,8 +157,20 @@ export const DeleteSelectedConfirmation = ({ open, handleClose, selected }) => {
     }, [countdown])
 
 
+    function handleClose(){
+        closeMenu({
+            noSelection: false,
+            makeups: false,
+            delete: false,
+            loginEmail: { display: false, to: "" }
+        })
+    };
+
     function deleteSelected() {
-        console.log('deleting selected', names)
+        const ids = {ids:selected.map(s => s.id)}
+        deleteStudents(ids)
+        setSelection([])
+        handleClose()
     }
 
     const names = selected.map(s => <li key={s.id}>{s.firstName} {s.lastName}</li>)
@@ -176,7 +191,6 @@ export const DeleteSelectedConfirmation = ({ open, handleClose, selected }) => {
                 <DialogContentText id="alert-confirm-delete-students-description">
                     Delete the following student(s)?
 
-                    {/* Associated parents will also be deleted if no other students from this family exist. */}
                 </DialogContentText>
                 <ul>
                     {names}

@@ -3,6 +3,7 @@ import { Grid } from '@mui/material';
 
 const ResponsiveGrid = styled(Grid)(({ theme }) => ({
     alignSelf: 'center',
+    alignItems:'center',
     [theme.breakpoints.down('sm')]: {
         justifyContent: 'center',
         textAlign: 'center'

@@ -32,8 +32,8 @@ export const slice = createSlice({
                 return newEvents
             })
             .addMatcher(api.endpoints.updateEvent.matchFulfilled, (state, action) => {
-                console.log('fulfilled: updateEvent', action,);
-                // return action.payload.data
+                console.log('fulfilled: updateEvent', action.payload.data);
+                return state.map(e=> e.id === action.payload.data.id ? {id: action.payload.data.id, ...action.payload.data.attributes} : e)
             })
             .addMatcher(api.endpoints.updateFutureEventOccurances.matchFulfilled, (state, action) => {
                 console.log('fulfilled: updateFutureEvents', action,);
@@ -45,7 +45,7 @@ export const slice = createSlice({
             })
             .addMatcher(api.endpoints.deleteEvent.matchFulfilled, (state, action) => {
                 console.log('fulfilled: deleteEvent', action,);
-                return state.filter(event => event.id !== action.payload.id)
+                return state.filter(event => parseInt(event.id) !== action.payload.id)
             })
             .addMatcher(api.endpoints.deleteFutureEventOccurances.matchFulfilled, (state, action) => {
                 console.log('fulfilled: deleteFutureEvents', action,);

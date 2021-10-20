@@ -48,12 +48,10 @@ export default function Calendar() {
   };
 
   const handleEventClick = (e) => {
-    console.log(e.event)
     const id = e.event.id;
     const event = events.find(evt=> evt.id === id);
     setSelectedEvent(event);
     handleMenus('eventSummary')
-    console.log(event)
   };
 
   const { path, url } = useRouteMatch();

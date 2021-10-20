@@ -18,19 +18,20 @@ import {
     Divider,
     Backdrop,
     CircularProgress,
-    Alert
 } from "@mui/material"
-
+import TrashIcon from "@mui/icons-material/Delete"
 import EventIcon from "@mui/icons-material/Event";
 import SaveIcon from '@mui/icons-material/Save';
 import { useSelector } from "react-redux";
 import { Field, Formik } from 'formik';
 import { useHistory } from "react-router";
 import * as yup from 'yup';
+import dayjs from "dayjs";
 
+import { RecurringEventModal } from "./RecurringEventModal";
 import PageHeader from "../components/PageHeader";
 import eventHelper from "../../util/eventHelper";
-import { useCreateEventMutation } from "../../features/api";
+import { useCreateEventMutation, useCreateRecurringEventMutation, useUpdateEventMutation } from "../../features/api";
 import ResponsiveGrid from "../components/ResponsiveGrid";
 
 
@@ -46,7 +47,8 @@ const validationSchema = yup.object({
     time: yup.string()
         .matches(/(\d{2}:\d{2})/, "Invalid time selection"),
     recurring: yup.boolean(),
-    endRecur: yup.date(),
+    endDate: yup.date()
+    .nullable(),
     price: yup.number()
         .min(0, "Must be a positive number")
         .lessThan(1000, "Whew. You're expensive. Must be less than 1000"),
@@ -55,59 +57,110 @@ const validationSchema = yup.object({
     visible: yup.boolean(),
     title: yup.string()
         .max(50, "Must be less than 50 characters"),
-    location: yup.string(),
+    location: yup.string()
+        .nullable(),
 })
 
-export default function EventForm({ event, defaultLesson=false }) {
-    const settings = useSelector(state => state.settings.attributes);
-    const teacherId = useSelector(state => state.user.id);
-    const students = useSelector(state => state.students);
-
-    const [responseErrors, setResponseErrors] = useState([]);
-    const [inputValue, setInputValue] = useState('');
+export default function EventForm({ event, defaultLesson = false }) {
     const history = useHistory();
-    const [createEvent, { isLoading, error }] = useCreateEventMutation();
+    const settings = useSelector(state => state.settings.attributes);
+    const students = useSelector(state => state.students);
+    const [createEvent, { isLoading}] = useCreateEventMutation();
+    const [createRecurringEvent] = useCreateRecurringEventMutation();
+    const [updateEvent] = useUpdateEventMutation();
+    const [inputValue, setInputValue] = useState('');
+    const [recurringModal, setRecurringModal] = useState({
+        open: false,
+        type: "",
+        eventObj: {}
+    });
+    console.log('event:', event)
+    const initialValues = event.id ?
+        {   ...event,
+            duration: dayjs(event.end).diff(event.start, 'm'),
+            time: dayjs(event.start).format('HH:mm'),
+            date: dayjs(event.start).format('YYYY-MM-DD'),
+            endDate: event.endDate ? event.endDate : ""
+        } : {
+            studentProfile: null,
+            defaultLesson: defaultLesson,
+            eventType: "lesson",
+            duration: "",
+            allDay: false,
+            date: "",
+            time: "",
+            recurring: defaultLesson,
+            endDate: "",
+            price: settings.defaultLessonPrice,
+            allowRegistration: false,
+            makeUpCreditRequired: false,
+            visible: settings.defaultEventVisibility,
+            title: "",
+            location: settings.location,
+            recurringGroupId: null
+        }
+        console.log('initialValues:', initialValues)
+    function handleUpdatingEvent(formattedEvent) {
+        if (event.recurring) {
+            setRecurringModal({
+                open: true,
+                type: 'Update',
+                eventObj: formattedEvent
+            })
+        } else {
+            updateEvent(formattedEvent)
+            .unwrap()
+            .then(()=>history.push('/calendar'))
+            .catch((error)=>console.log(error))
+        }
+    }
 
-    const renderedErrors = responseErrors.map(error => <Alert key={error} severity="error">{error}</Alert>);
+    function handleNewEvent(formattedEvent) {
+        console.log('new', formattedEvent)
+        if (formattedEvent.recurringGroup){
+            createRecurringEvent(formattedEvent)
+            .unwrap()
+            .then(() => history.push('/calendar'))
+            .catch((errors) => console.log(errors))
+        }else{
+        createEvent(formattedEvent)
+            .unwrap()
+            .then(() => history.push('/calendar'))
+            .catch((errors) => console.log(errors))
+        }
+    }
 
-    const initialValues = event ? event
-    // {
-    //     student: students.find(s => s.id == event.id),
-    //     defaultLesson: event.defaultLesson,
-    //     eventType: event.eventType,
-    //     duration: event.recurring? dayjs(event.startTime).diff(event.endTime, 'm') : dayjs(event.start).diff(event.end, 'm'),
-    //     allDay: event.allDay,
-    //     date: event.recurring? findThisWeeksLesson(event.startRecur): event.start ,
-    //     time: event.recurring? event.startTime : dayjs(event.start).format('HH:mm'),
-    //     recurring: event.recurring,
-    //     endRecur: event.endRecur,
-    //     price: event.price,
-    //     allowRegistration: event.allowRegistration,
-    //     makeUpCreditRequired: event.makeUpCreditRequired,
-    //     visible: event.visible, 
-    //     title: event.title,
-    //     location: event.location,
-    // } 
-    : {
-        student: null,
-        defaultLesson: defaultLesson,
-        eventType: "lesson",
-        duration: "",
-        allDay: false,
-        date: "",
-        time: "",
-        recurring: defaultLesson,
-        endRecur: "",
-        price: settings.defaultLessonPrice,
-        allowRegistration: false,
-        makeUpCreditRequired: false,
-        visible: settings.defaultEventVisibility,
-        title: "",
-        location: settings.location,
+    function handleClose() {
+        setRecurringModal({
+            open: false,
+            type: "",
+            eventObj: {}
+        })
+    }
+
+    function handleDeleteEvent() {
+        if (event.recurring) {
+            setRecurringModal({
+                open: true,
+                type: 'Delete',
+                eventObj: event
+            })
+        } else {
+            console.log("deleting event", event)
+        }
     }
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            {recurringModal &&
+                <RecurringEventModal
+                    open={recurringModal.open}
+                    handleClose={handleClose}
+                    type={recurringModal.type}
+                    eventObj={recurringModal.eventObj}
+                />
+            }
+
             <Backdrop
                 sx={{ color: '#fff', zIndex: 10 }}
                 open={isLoading}
@@ -122,25 +175,15 @@ export default function EventForm({ event, defaultLesson=false }) {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
-                    let eventData = eventHelper({ teacherId: teacherId, ...values })
-                    createEvent(eventData);
-                    if (error) {
-                        setResponseErrors(prev=> [...prev, error]);
-                    } else {
-                        // setSelectedEvent({});
-                        history.push('/calendar');
-                    }
+                    const formattedEvent = eventHelper(values)
+                    console.log('formatted:', formattedEvent)
+                    event ? handleUpdatingEvent(formattedEvent) : handleNewEvent(formattedEvent)
                 }}
             >
                 {({ values, errors, touched, handleChange, handleSubmit, setFieldValue }) => (
                     <Box component="form" sx={{ textAlign: 'left', display: 'flex', flexFlow: 'column' }}>
                         <Paper sx={{ p: 3, mb: 2, }}>
                             <ResponsiveGrid container spacing={2}>
-                                {responseErrors.length > 0 &&
-                                    <Grid item xs={12}>
-                                        {renderedErrors}
-                                    </Grid>
-                                }
                                 <ResponsiveGrid container item xs={12} md={3}>
                                     <Typography variant="button" color="initial">
                                         Student Attendees
@@ -152,11 +195,13 @@ export default function EventForm({ event, defaultLesson=false }) {
                                         size='small'
                                         sx={{ mt: 1, width: 250 }}
                                         value={values.student}
-                                        onChange={(e, value) => setFieldValue("student", value)}
+                                        onChange={(e, value) => {
+                                            setFieldValue("studentProfile", value)
+                                        }}
                                         isOptionEqualToValue={(option, value) => option.id === value.id}
                                         inputValue={inputValue}
                                         onInputChange={(e, value) => setInputValue(value)}
-                                        id="student"
+                                        id="studentProfile"
                                         options={students}
                                         getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
                                         renderInput={(params) => (
@@ -395,14 +440,14 @@ export default function EventForm({ event, defaultLesson=false }) {
                                     </ResponsiveGrid>
                                     <Grid item xs={9} md={3} alignSelf='center'>
                                         <TextField
-                                            id="endRecur"
-                                            name="endRecur"
+                                            id="endDate"
+                                            name="endDate"
                                             sx={{ width: 170 }}
                                             hiddenLabel
                                             size="small"
-                                            value={values.endRecur}
-                                            error={touched.endRecur && Boolean(errors.endRecur)}
-                                            helperText={touched.endRecur && errors.endRecur}
+                                            value={values.endDate}
+                                            error={touched.endDate && Boolean(errors.endDate)}
+                                            helperText={touched.endDate && errors.endDate}
                                             onChange={handleChange}
                                             type='date'
                                         />
@@ -495,11 +540,22 @@ export default function EventForm({ event, defaultLesson=false }) {
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
+
                                 <Grid item xs={12} sx={{ textAlign: 'right' }}>
                                     <Typography variant="caption" color="secondary" >
                                         *required field
                                     </Typography>
                                 </Grid>
+                                {event && <Grid item xs={12} >
+                                    <Button
+                                        variant="outlined"
+                                        color="secondary"
+                                        startIcon={<TrashIcon />}
+                                        onClick={handleDeleteEvent}
+                                    >
+                                        Delete Event
+                                    </Button>
+                                </Grid>}
                             </ResponsiveGrid>
                         </Paper>
 

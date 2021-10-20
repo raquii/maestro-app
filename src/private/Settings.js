@@ -1,4 +1,5 @@
 import {
+    Alert,
     Box,
     Button,
     Container,
@@ -14,6 +15,7 @@ import {
     RadioGroup,
     TextField,
     Typography,
+    Snackbar,
 } from "@mui/material"
 import SettingsIcon from "@mui/icons-material/Settings";
 import SaveIcon from '@mui/icons-material/Save';
@@ -24,6 +26,7 @@ import * as yup from 'yup';
 import { useUpdateSettingsMutation } from "../features/api";
 import PageHeader from "./components/PageHeader";
 import ResponsiveGrid from "./components/ResponsiveGrid";
+import { useState } from "react";
 
 
 const validationSchema = yup.object({
@@ -74,10 +77,36 @@ const validationSchema = yup.object({
 export default function Settings() {
     const settings = useSelector(state => state.settings.attributes)
     const id = useSelector(state => state.settings.id)
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [openError, setOpenError] = useState(false);
     const [updateSettings] = useUpdateSettingsMutation();
+
+    const handleCloseSuccess = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSuccess(false);
+    };
+
+    const handleCloseError = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenError(false);
+    };
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleCloseSuccess}>
+                <Alert onClose={handleCloseSuccess} variant="filled" elevation={6} severity="success" sx={{ width: '100%' }}>
+                    Changes Saved!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={openError} autoHideDuration={6000} onClose={handleCloseError}>
+                <Alert onClose={handleCloseError} variant="filled" elevation={6} severity="error" sx={{ width: '100%' }}>
+                    Uh oh! Something went wrong.
+                </Alert>
+            </Snackbar>
             <PageHeader
                 icon={<SettingsIcon fontSize="large" sx={{ mr: 1 }} color="primary" />}
                 page="Settings"
@@ -88,6 +117,9 @@ export default function Settings() {
                 onSubmit={(values) => {
                     const castValues = { id: id, ...validationSchema.cast(values) }
                     updateSettings(castValues)
+                    .unwrap()
+                    .then((p)=> setOpenSuccess(true))
+                    .catch((error) => setOpenError(true))
                 }}
             >
                 {({ values, errors, touched, handleChange, handleSubmit }) => (

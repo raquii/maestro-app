@@ -5,9 +5,9 @@ export const api = createApi({
         baseUrl: 'http://localhost:3000/',
         prepareHeaders: (headers) => {
             if (localStorage.getItem("token")) {
-              headers.set('Authorization', `${localStorage.getItem("token")}`)
+                headers.set('Authorization', `${localStorage.getItem("token")}`)
             }
-            headers.append("Content-Type","application/json")
+            headers.append("Content-Type", "application/json")
             return headers
         },
     }),
@@ -18,8 +18,8 @@ export const api = createApi({
                 method: 'POST',
                 body: credentials,
             }),
-            transformResponse: (rawResult,meta) =>{
-                return {...rawResult, token: meta.response.headers.get("Authorization")}
+            transformResponse: (rawResult, meta) => {
+                return { ...rawResult, token: meta.response.headers.get("Authorization") }
             }
         }),
         logout: builder.mutation({
@@ -34,8 +34,8 @@ export const api = createApi({
                 method: 'POST',
                 body: credentials,
             }),
-            transformResponse: (rawResult,meta) =>{
-                return {...rawResult, token: meta.response.headers.get("Authorization")}
+            transformResponse: (rawResult, meta) => {
+                return { ...rawResult, token: meta.response.headers.get("Authorization") }
             }
         }),
         isLoggedIn: builder.mutation({
@@ -49,7 +49,7 @@ export const api = createApi({
             }),
         }),
         updateStudent: builder.mutation({
-            query: ({id, ...student}) => ({
+            query: ({ id, ...student }) => ({
                 url: `students/${id}`,
                 method: 'PATCH',
                 body: student
@@ -63,50 +63,85 @@ export const api = createApi({
             }),
         }),
         updateSettings: builder.mutation({
-            query: ({id, ...preference}) => ({
+            query: ({ id, ...preference }) => ({
                 url: `preferences/${id}`,
                 method: 'PATCH',
                 body: preference
             })
         }),
-        fetchEvents:builder.query({
-            query:()=>({
+        fetchEvents: builder.query({
+            query: () => ({
                 url: 'events'
             })
         }),
         createEvent: builder.mutation({
-            query:(event) => ({
-                url:'events',
+            query: (event) => ({
+                url: 'events',
+                method: 'POST',
+                body: event
+            })
+        }),
+        createRecurringEvent: builder.mutation({
+            query: (event)=>({
+                url:'events/create_recurring_event',
                 method: 'POST',
                 body: event
             })
         }),
         updateEvent: builder.mutation({
-            query:({id, ...event}) => ({
-                url:`events/${id}`,
+            query: ({ id, ...event }) => ({
+                url: `events/${id}`,
                 method: 'PATCH',
-                body:event
+                body: event
             })
         }),
         deleteEvent: builder.mutation({
-            query:({id, ...event}) => ({
-                url:`events/${id}`,
+            query: ({ id, ...event }) => ({
+                url: `events/${id}`,
                 method: 'DELETE',
-                body:event
+                body: event
+            })
+        }),
+        updateAllEventOccurances: builder.mutation({
+            query: (event) => ({
+                url: `events/update_all_event_occurances`,
+                method: 'PUT',
+                body: event
+            })
+        }),
+        updateFutureEventOccurances: builder.mutation({
+            query: (event) => ({
+                url: `events/update_future_event_occurances`,
+                method: 'PUT',
+                body: event
+            })
+        }),
+        deleteAllEventOccurances: builder.mutation({
+            query: (event) => ({
+                url: `events/destroy_all_event_occurances`,
+                method: 'DELETE',
+                body: event
+            })
+        }),
+        deleteFutureEventOccurances: builder.mutation({
+            query: (event) => ({
+                url: `events/destroy_future_event_occurances`,
+                method: 'DELETE',
+                body: event
             })
         }),
         createStudent: builder.mutation({
-            query:(student) => ({
-                url:'students',
+            query: (student) => ({
+                url: 'students',
                 method: 'POST',
-                body:student
+                body: student
             })
         }),
         deleteStudent: builder.mutation({
-            query:({id, ...student}) => ({
-                url:`students/${id}`,
+            query: ({ id, ...student }) => ({
+                url: `students/${id}`,
                 method: 'DELETE',
-                body:student
+                body: student
             })
         }),
         deleteStudents: builder.mutation({
@@ -120,26 +155,32 @@ export const api = createApi({
 })
 
 
-export const { 
-    useLoginMutation, 
-    useLogoutMutation, 
+export const {
+    useLoginMutation,
+    useLogoutMutation,
     useSignupMutation,
-    useIsLoggedInMutation, 
+    useIsLoggedInMutation,
     useFetchStudentsQuery,
     useUpdateStudentMutation,
     useUpdateStudentsMutation,
     useUpdateSettingsMutation,
     useFetchEventsQuery,
     useCreateEventMutation,
+    useCreateRecurringEventMutation,
     useUpdateEventMutation,
+    useDeleteEventMutation,
+    useUpdateAllEventOccurancesMutation,
+    useUpdateFutureEventOccurancesMutation,
+    useDeleteAllEventOccurancesMutation,
+    useDeleteFutureEventOccurancesMutation,
     useCreateStudentMutation,
     useDeleteStudentMutation,
     useDeleteStudentsMutation
-    } = api;
+} = api;
 
-export const { endpoints: { 
-    login, 
-    logout, 
+export const { endpoints: {
+    login,
+    logout,
     signup,
     isLoggedIn,
     fetchStudents,
@@ -148,8 +189,14 @@ export const { endpoints: {
     updateSettings,
     fetchEvents,
     createEvent,
+    createRecurringEvent,
     updateEvent,
+    updateAllEventOccurances,
+    updateFutureEventOccurances,
+    deleteEvent,
+    deleteAllEventOccurances,
+    deleteFutureEventOccurances,
     createStudent,
     deleteStudent,
     deleteStudents
-    } } = api;
+} } = api;

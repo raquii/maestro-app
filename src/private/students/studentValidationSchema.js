@@ -1,17 +1,17 @@
 import * as yup from 'yup';
 
 const studentValidationSchema = yup.object({
-    student: yup.object({
+    studentProfile: yup.object({
         firstName: yup.string()
         .min(2, 'First name should be at least 2 characters')
         .max(50, 'First name should be less than 50 characters')
-        .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
+        .matches(/^([A-ZÀ-ÿa-z][-,A-ZÀ-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
         .trim()
         .required('Required'),
         lastName: yup.string()
             .min(2, 'First name should be at least 2 characters')
             .max(50, 'First name should be less than 50 characters')
-            .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
+            .matches(/^([A-ZÀ-ÿa-z][-,A-ZÀ-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
             .trim()
             .required('Required'),
         email: yup.string()
@@ -20,9 +20,6 @@ const studentValidationSchema = yup.object({
         address: yup.string(),
         lessonReminderEmails: yup.boolean(),
         lessonReminderSms: yup.boolean(),
-        role: yup.number().integer(),
-    }),
-    studentProfile: yup.object({
         birthday: yup.date(),
         adult: yup.boolean(),
         defaultLessonPrice: yup.number()
@@ -31,26 +28,23 @@ const studentValidationSchema = yup.object({
             .integer()
             .min(0, "Invalid Duration")
             .max(120, "Invalid Lesson Length. Please select a length less than 120 minutes"),
-        status: yup.number()
-            .integer()
-            .min(0, "Invalid Status")
-            .max(4, "Invalid Status")
+        status: yup.string()
             .required('Please set a status for the student'),
         gender: yup.string(),
         grade: yup.string().max(10, "Should be less than 10 characters."),
-        school: yup.string()
+        school: yup.string(),
     }),
-    guardian1: yup.object({
+    guardianProfileA: yup.object({
         firstName: yup.string()
         .min(2, 'First name should be at least 2 characters')
         .max(50, 'First name should be less than 50 characters')
-        .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
+        .matches(/^([A-ZÀ-ÿa-z][-,A-ZÀ-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
         .trim()
         .required('Required'),
         lastName: yup.string()
             .min(2, 'First name should be at least 2 characters')
             .max(50, 'First name should be less than 50 characters')
-            .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
+            .matches(/^([A-ZÀ-ÿa-z][-,A-ZÀ-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
             .trim()
             .required('Required'),
         email: yup.string()
@@ -59,19 +53,18 @@ const studentValidationSchema = yup.object({
         address: yup.string(),
         lessonReminderEmails: yup.boolean(),
         lessonReminderSms: yup.boolean(),
-        role: yup.number().integer(),
     }),
-    guardian2: yup.object({
+    guardianProfileB: yup.object({
         firstName: yup.string()
         .min(2, 'First name should be at least 2 characters')
         .max(50, 'First name should be less than 50 characters')
-        .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
+        .matches(/^([A-ZÀ-ÿa-z][-,A-ZÀ-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
         .trim()
         .required('Required'),
         lastName: yup.string()
             .min(2, 'First name should be at least 2 characters')
             .max(50, 'First name should be less than 50 characters')
-            .matches(/^([A-ZÀ-ÿa-z][-,À-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
+            .matches(/^([A-ZÀ-ÿa-z][-,A-ZÀ-ÿa-z. ']+[ ]*)+$/, "Invalid name characters")
             .trim()
             .required('Required'),
         email: yup.string()
@@ -80,7 +73,6 @@ const studentValidationSchema = yup.object({
         address: yup.string(),
         lessonReminderEmails: yup.boolean(),
         lessonReminderSms: yup.boolean(),
-        role: yup.number().integer(),
     }),
 });
 

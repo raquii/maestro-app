@@ -15,10 +15,20 @@ import CalendarToolbar from './calendar/CalendarToolbar';
 import EventTypes from './calendar/EventTypes';
 import EventForm from './calendar/EventForm';
 import EventSummary from './calendar/EventSummary';
+import CalendarSettings from './calendar/CalendarSettings';
 
 export default function Calendar() {
   const settings = useSelector(state => state.settings.attributes);
   const events = useSelector(state => state.events);
+  const colors = {
+    lesson: settings.lessonColor,
+    group_lesson: settings.groupLessonColor,
+    recital: settings.recitalColor,
+    mmake_up_lesson: settings.makeUpLessonColor,
+    vacation: settings.vacationColor,
+    birthday: settings.birthdayColor,
+  };
+  const eventsWithColors = events.map(e => ({ ...e, color: colors[e.eventType] }))
 
   const [selectedEvent, setSelectedEvent] = useState({});
 
@@ -27,6 +37,7 @@ export default function Calendar() {
   const [openMenu, setOpenMenu] = useState({
     eventTypes: false,
     eventSummary: false,
+    calendarSettings: false,
   });
 
   const handleMenus = (menu) => {
@@ -37,11 +48,14 @@ export default function Calendar() {
       case 'eventSummary':
         setOpenMenu({ ...openMenu, eventSummary: true })
         break;
-
+      case 'calendarSettings':
+        setOpenMenu({ ...openMenu, calendarSettings: true })
+        break;
       default:
         setOpenMenu({
           eventTypes: false,
           eventSummary: false,
+          calendarSettings: false,
         })
         break;
     }
@@ -49,7 +63,7 @@ export default function Calendar() {
 
   const handleEventClick = (e) => {
     const id = e.event.id;
-    const event = events.find(evt=> evt.id === id);
+    const event = events.find(evt => evt.id === id);
     setSelectedEvent(event);
     handleMenus('eventSummary')
   };
@@ -65,12 +79,18 @@ export default function Calendar() {
         />
       }
       {openMenu.eventSummary &&
-        <EventSummary 
-        event={selectedEvent}
-        setSelectedEvent={setSelectedEvent}
-        closeMenu={handleMenus}
-        open={openMenu.eventSummary}
-        url={url} 
+        <EventSummary
+          event={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+          closeMenu={handleMenus}
+          open={openMenu.eventSummary}
+          url={url}
+        />
+      }
+      {openMenu.calendarSettings &&
+        <CalendarSettings
+          open={openMenu.calendarSettings}
+          handleClose={handleMenus}
         />
       }
       <Switch>
@@ -81,7 +101,7 @@ export default function Calendar() {
           <EventForm event={selectedEvent} setSelectedEvent={setSelectedEvent} />
         </Route >
         <Route path={`${path}/default-event-details`}>
-          <EventForm defaultLesson={true}/>
+          <EventForm defaultLesson={true} />
         </Route >
         <Route exact path={`${path}`}>
           <PageHeader icon={<EventIcon fontSize="large" sx={{ mr: 1 }} />} page="Calendar" />
@@ -109,7 +129,7 @@ export default function Calendar() {
                     initialView={settings.initialView}
                     weekends={false}
                     ref={calendarRef}
-                    events={events}
+                    events={eventsWithColors}
                     eventClick={handleEventClick}
                     nowIndicator={true}
                     slotMinTime={settings.slotMinTime}

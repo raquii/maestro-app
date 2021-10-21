@@ -74,18 +74,19 @@ export default function EventForm({ event, defaultLesson = false }) {
         type: "",
         eventObj: {}
     });
-    console.log('event:', event)
-    const initialValues = event.id ?
+
+    const initialValues = event ?
         {   ...event,
             duration: dayjs(event.end).diff(event.start, 'm'),
             time: dayjs(event.start).format('HH:mm'),
             date: dayjs(event.start).format('YYYY-MM-DD'),
-            endDate: event.endDate ? event.endDate : ""
+            endDate: event.endDate ? event.endDate : "",
+            studentProfile: event.studentProfileId ? students.find(s=>s.id === event.studentProfileId+"") : null
         } : {
             studentProfile: null,
             defaultLesson: defaultLesson,
             eventType: "lesson",
-            duration: "",
+            duration: settings.defaultLessonDuration,
             allDay: false,
             date: "",
             time: "",
@@ -194,13 +195,13 @@ export default function EventForm({ event, defaultLesson = false }) {
                                         autoFocus
                                         size='small'
                                         sx={{ mt: 1, width: 250 }}
-                                        value={values.student}
-                                        onChange={(e, value) => {
-                                            setFieldValue("studentProfile", value)
-                                        }}
-                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        value={values.studentProfile}
+                                        onChange={(e, value) => setFieldValue("studentProfile", value)}
+                                        isOptionEqualToValue={(option, value) => option === value}
                                         inputValue={inputValue}
-                                        onInputChange={(e, value) => setInputValue(value)}
+                                        onInputChange={(e, value) => {
+                                            setInputValue(value)
+                                        }}
                                         id="studentProfile"
                                         options={students}
                                         getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}

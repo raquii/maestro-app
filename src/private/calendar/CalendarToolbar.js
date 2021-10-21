@@ -53,6 +53,7 @@ export default function CalendarToolbar({handleMenus, calendarRef, url}) {
                     id='calendar-settings-menu-button'
                     aria-label="settings-menu"
                     size='small'
+                    onClick={()=>handleMenus('calendarSettings')}
                 >
                     <SettingsIcon color="secondary" />
                     Settings

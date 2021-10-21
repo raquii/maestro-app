@@ -1,44 +1,58 @@
-
-import { Button, Box, Toolbar, Typography } from "@mui/material"
+import { Button, AppBar, Toolbar, Typography, SvgIcon} from "@mui/material"
+import { border } from "@mui/system";
 import { Link } from "react-router-dom"
+import { ReactComponent as Logo } from '../motif.svg';
 
 export default function Nav() {
     return (
-        <>
+
+        <AppBar
+            position="static"
+
+            elevation={0}
+            sx={{ backgroundColor: "#8bb6b8", borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+        >
             <Toolbar
                 component="nav"
-                sx={{ justifyContent: 'space-between', overflowX: 'auto' }}
+                align='left'
+                sx={{ flexWrap: 'wrap' }}
             >
+                <Button
+                    component={Link}
+                    to='/welcome'
+                >
+                    <SvgIcon
+                        component={Logo}
+                        sx={{ fontSize: "35pt", }}
+                        viewBox="0 0 132.29 132.29"
+                    />
+                </Button>
                 <Typography
                     component="h2"
                     variant="h5"
                     color="inherit"
                     align="center"
                     noWrap
-                    sx={{ flex: 1 }}
+                    sx={{ flexGrow: 1, fontFamily: 'Merriweather', fontStyle: 'italic', }}
                 >
-                    Motif
+                    { } motif
                 </Typography>
-                <Box>
-                    <Button
-                        component={Link}
-                        to='/signup'
-                        variant="outlined"
-                        size="small"
-                    >
-                        Sign Up
-                    </Button>
-                    <Button
-                        component={Link}
-                        to='/signin'
-                        variant="outlined"
-                        size="small"
-                    >
-                        Sign In
-                    </Button>
-                </Box>
+                <Button
+                    component={Link}
+                    to='/signup'
+                    sx={{ my: 1, mx: 1.5 }}
+                >
+                    Sign Up
+                </Button>
+                <Button
+                    component={Link}
+                    to='/signin'
+                    sx={{ my: 1, mx: 1.5 }}
+                >
+                    Sign In
+                </Button>
             </Toolbar>
+        </AppBar>
 
-        </>
     )
 }

@@ -1,7 +1,9 @@
+import { Switch, Route } from "react-router-dom"
+import Welcome from "./Welcome"
 import Nav from "./Nav"
 import SignUp from "./SignUp"
 import SignIn from "./SignIn"
-import { Switch, Route } from "react-router-dom"
+
 
 export default function Public() {
     return (
@@ -10,7 +12,7 @@ export default function Public() {
             <main>
                 <Switch>
                     <Route path='/welcome'>
-
+                        <Welcome />
                     </Route>
                     <Route path='/signup'>
                         <SignUp />

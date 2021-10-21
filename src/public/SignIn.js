@@ -32,7 +32,7 @@ export default function SignIn() {
                 password: data.get('password'),
             }
         }
-
+        localStorage.removeItem("token")
         try {
             await login(signInObj)
                 .unwrap()

@@ -67,6 +67,8 @@ export default function SignUp() {
                             email: "",
                             password: "",
                             passwordConfirmation: "",
+                            phone: "",
+                            address: ""
                         }}
                         validationSchema={
                             yup.object({
@@ -94,24 +96,34 @@ export default function SignUp() {
                                 passwordConfirmation: yup.string()
                                     .test('match-password', 'Passwords must match.', (value, context) => value === context.parent.password)
                                     .required('Password is required'),
+                                phone: yup.string(),
+                                address: yup.string(),
                             })
                         }
                         onSubmit={async (values) => {
                             const newUser = {
-                                user: { ...values }
+                                user: {
+                                    email: values.email,
+                                    password: values.password,
+                                    passwordConfirmation: values.passwordConfirmation,
+                                    teacherProfileAttributes: {
+                                        email: values.email,
+                                        phone: values.phone,
+                                        firstName: values.firstName,
+                                        lastName: values.lastName,
+                                        address: values.address
+                                    }
+                                }
                             }
 
-                            try {
-                                await signup(newUser)
+                                signup(newUser)
                                     .unwrap()
-                                    .then(data => {
+                                    .then((data) => {
                                         localStorage.setItem("token", data.token)
                                         history.push('/dashboard')
                                     })
-                                    .catch(error => setResponseErrors(error.data.errors))
-                            } catch (error) {
-                                console.log(error)
-                            }
+                                    .catch(error => setResponseErrors([error.error]))
+
                         }}>
                         {({ errors, touched, values, handleSubmit }) => (
                             <Form autoComplete="off">
@@ -122,6 +134,7 @@ export default function SignUp() {
                                             variant="outlined"
                                             name="firstName"
                                             label="First Name"
+                                            required
                                             error={touched.firstName && Boolean(errors.firstName)}
                                             helperText={touched.firstName && errors.firstName}
                                         />
@@ -132,11 +145,13 @@ export default function SignUp() {
                                             variant="outlined"
                                             name="lastName"
                                             label="Last Name"
+                                            required
                                             value={values.lastName}
                                             error={touched.lastName && Boolean(errors.lastName)}
                                             helperText={touched.lastName && errors.lastName}
                                         />
                                     </Grid>
+
                                     <Grid item xs={12}>
                                         <Field
                                             fullWidth
@@ -145,7 +160,7 @@ export default function SignUp() {
                                             id="email"
                                             name="email"
                                             label="Email"
-                                            type="email"
+                                            required
                                             value={values.email}
                                             error={touched.email && Boolean(errors.email)}
                                             helperText={touched.email && errors.email}
@@ -157,6 +172,7 @@ export default function SignUp() {
                                             component={TextField}
                                             variant="outlined"
                                             name="password"
+                                            required
                                             type={showPassword ? 'text' : 'password'}
                                             value={values.password}
                                             error={touched.password && Boolean(errors.password)}
@@ -180,12 +196,44 @@ export default function SignUp() {
                                         <Field
                                             component={TextField}
                                             variant="outlined"
+                                            required
                                             name="passwordConfirmation"
                                             label="Confirm Password"
                                             type={showPassword ? "text" : "password"}
                                             value={values.passwordConfirmation}
                                             error={touched.passwordConfirmation && Boolean(errors.passwordConfirmation)}
                                             helperText={touched.passwordConfirmation && errors.passwordConfirmation}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Field
+                                            fullWidth
+                                            component={TextField}
+                                            variant="outlined"
+                                            id="phone"
+                                            name="phone"
+                                            label="Phone"
+                                            type="text"
+                                            value={values.phone}
+                                            error={touched.phone && Boolean(errors.phone)}
+                                            helperText={touched.phone && errors.phone}
+
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Field
+                                            fullWidth
+                                            component={TextField}
+                                            variant="outlined"
+                                            id="address"
+                                            name="address"
+                                            label="Studio Address"
+                                            type="text"
+                                            multiline
+                                            value={values.address}
+                                            error={touched.address && Boolean(errors.address)}
+                                            helperText={touched.address && errors.address}
+
                                         />
                                     </Grid>
                                     {responseErrors.length > 0 &&

@@ -43,6 +43,13 @@ export const api = createApi({
                 url: 'me',
             })
         }),
+        updateTeacherProfile: builder.mutation({
+            query: ({id, ...profile}) => ({
+                url: `teacher_profiles/${id}`,
+                method: 'PATCH',
+                body: profile
+            })
+        }),
         fetchStudents: builder.query({
             query: () => ({
                 url: 'students',
@@ -160,6 +167,7 @@ export const {
     useLogoutMutation,
     useSignupMutation,
     useIsLoggedInMutation,
+    useUpdateTeacherProfileMutation,
     useFetchStudentsQuery,
     useUpdateStudentMutation,
     useUpdateStudentsMutation,
@@ -183,6 +191,7 @@ export const { endpoints: {
     logout,
     signup,
     isLoggedIn,
+    updateTeacherProfile,
     fetchStudents,
     updateStudent,
     updateStudents,

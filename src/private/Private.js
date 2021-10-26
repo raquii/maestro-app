@@ -1,6 +1,5 @@
 import { Route, Switch } from "react-router";
 import { Box } from "@mui/material";
-
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard"
 import Students from "./Students";
@@ -9,10 +8,9 @@ import Settings from "./Settings";
 import Profile from "./Profile";
 import Billing from "./Billing";
 
-export default function Private() {
-    //I want a header at the top, that renders the users name in the right corner
-    //a sidebar navigation menu with link components for routes
 
+export default function Private() {
+  
     return (
         <Box sx={{ display: 'flex' }}>
             <Sidebar />

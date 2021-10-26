@@ -44,7 +44,7 @@ export default function NewStudentForm() {
 
     const settings = useSelector(state => state.settings.attributes);
     const families = useSelector(state => state.families);
-    const studioId= useSelector(state=> state.user.studio.id)
+    const studioId= useSelector(state=> state.user.studioId)
 
     const renderedErrors = responseErrors.map(error => <Alert key={error} severity="error">{error}</Alert>);
     const existingFamilies = families.map(fam => <MenuItem key={fam.id} value={fam.id}>{fam.names}</MenuItem>);

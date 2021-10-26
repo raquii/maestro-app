@@ -26,8 +26,8 @@ export default function EventTypes({ closeMenu, open }) {
             <Formik
                 initialValues={initialValues}
                 onSubmit={(values) => {
-                    console.log(values)
                     updateSettings(values);
+                    closeMenu();
                 }}
             >{({ values, handleChange, handleSubmit }) => (<>
                 <DialogContent>

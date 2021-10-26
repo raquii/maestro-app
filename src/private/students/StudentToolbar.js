@@ -62,14 +62,23 @@ const ShowButton = styled(Button)(({ theme }) => ({
     }
 }));
 
-export default function StudentToolbar({ match, search, setSearch, view, setView, setEmailRecipients, handleConfirmationDialogues, handleStatusChange }) {
+export default function StudentToolbar({
+    match,
+    search,
+    setSearch,
+    view,
+    setView,
+    selection,
+    setEmailRecipients,
+    handleConfirmationDialogues,
+    handleStatusChange }) {
     //allows all popovers to be controlled by single piece of state
     const [popover, setPopover] = useState({
         anchor: null,
         menu: -1
     })
 
-    function resetPopover(){
+    function resetPopover() {
         setPopover({
             anchor: null,
             menu: -1
@@ -81,9 +90,10 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
         setView(e.target.id)
     }
 
-    function handleEmailClick(n) {
+    function handleEmailClick(e) {
+        const n = e.target.id
         switch (n) {
-            case 0:
+            case "0":
                 setEmailRecipients((state => ({
                     ...state,
                     open: true,
@@ -92,7 +102,7 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                 })
                 ))
                 break;
-            case 1:
+            case "1":
                 setEmailRecipients((state => ({
                     ...state,
                     open: true,
@@ -101,7 +111,7 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                 })
                 ))
                 break;
-            case 2:
+            case "2":
                 setEmailRecipients((state => ({
                     ...state,
                     open: true,
@@ -110,7 +120,7 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                 })
                 ))
                 break;
-            case 3:
+            case "3":
                 setEmailRecipients((state => ({
                     ...state,
                     open: true,
@@ -193,13 +203,31 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         role='listbox'
                         autoFocusItem={popover.anchor !== null}
                     >
-                        <MenuItem onClick={() => handleEmailClick(0)}>New Email</MenuItem>
-                        <MenuItem onClick={() => handleEmailClick(1)}>Email Selected Students</MenuItem>
-                        <MenuItem onClick={() => handleEmailClick(2)}>Email Selected Parents</MenuItem>
-                        <MenuItem onClick={() => handleEmailClick(3)}>Email Selected Students and Parents</MenuItem>
+                        <MenuItem onClick={handleEmailClick} id="0">New Email</MenuItem>
+                        <MenuItem
+                            onClick={handleEmailClick}
+                            id="1"
+                            disabled={selection.length > 0 ? false : true}
+                        >
+                            Email Selected Students
+                        </MenuItem>
+                        <MenuItem
+                            onClick={handleEmailClick}
+                            id="2"
+                            disabled={selection.length > 0 ? false : true}
+                        >
+                            Email Selected Parents
+                        </MenuItem>
+                        <MenuItem
+                            onClick={handleEmailClick}
+                            id="3"
+                            disabled={selection.length > 0 ? false : true}
+                        >
+                            Email Selected Students and Parents
+                        </MenuItem>
                         <Divider />
-                        <MenuItem id='loginEmailsStudents' onClick={handleConfirmationDialogues}>Send Login Email to Students</MenuItem>
-                        <MenuItem id='loginEmailsParents' onClick={handleConfirmationDialogues}>Send Login Email to Parents</MenuItem>
+                        <MenuItem id='loginEmailsStudents' onClick={handleConfirmationDialogues} disabled={selection.length > 0 ? false : true}>Send Login Email to Students</MenuItem>
+                        <MenuItem id='loginEmailsParents' onClick={handleConfirmationDialogues} disabled={selection.length > 0 ? false : true}>Send Login Email to Parents</MenuItem>
                     </MenuList>
                 }
                 {popover.menu === 2 &&
@@ -208,14 +236,14 @@ export default function StudentToolbar({ match, search, setSearch, view, setView
                         role='listbox'
                         autoFocusItem={popover.anchor !== null}
                     >
-                        <MenuItem id='resetMUC' onClick={handleConfirmationDialogues} >Reset Make-Up Credits</MenuItem>
-                        <MenuItem id='deleteStudents' onClick={handleConfirmationDialogues}>Delete Selected Students</MenuItem>
+                        <MenuItem id='resetMUC' disabled={selection.length > 0 ? false : true} onClick={handleConfirmationDialogues} >Reset Make-Up Credits</MenuItem>
+                        <MenuItem id='deleteStudents' disabled={selection.length > 0 ? false : true} onClick={handleConfirmationDialogues}>Delete Selected Students</MenuItem>
                         <Divider />
-                        <MenuItem onClick={()=>{handleStatusChange('active'); resetPopover()}}>Set Status to Active</MenuItem>
-                        <MenuItem onClick={()=>{handleStatusChange('trial'); resetPopover()}}>Set Status to Trial</MenuItem>
-                        <MenuItem onClick={()=>{handleStatusChange('inactive'); resetPopover()}}>Set Status to Inactive</MenuItem>
-                        <MenuItem onClick={()=>{handleStatusChange('waiting'); resetPopover()}}>Set Status to Waiting</MenuItem>
-                        <MenuItem onClick={()=>{handleStatusChange('lead'); resetPopover()}}>Set Status to Lead</MenuItem>
+                        <MenuItem disabled={selection.length > 0 ? false : true} onClick={() => { handleStatusChange('active'); resetPopover() }}>Set Status to Active</MenuItem>
+                        <MenuItem disabled={selection.length > 0 ? false : true} onClick={() => { handleStatusChange('trial'); resetPopover() }}>Set Status to Trial</MenuItem>
+                        <MenuItem disabled={selection.length > 0 ? false : true} onClick={() => { handleStatusChange('inactive'); resetPopover() }}>Set Status to Inactive</MenuItem>
+                        <MenuItem disabled={selection.length > 0 ? false : true} onClick={() => { handleStatusChange('waiting'); resetPopover() }}>Set Status to Waiting</MenuItem>
+                        <MenuItem disabled={selection.length > 0 ? false : true} onClick={() => { handleStatusChange('lead'); resetPopover() }}>Set Status to Lead</MenuItem>
                     </MenuList>
                 }
                 {popover.menu === 3 &&

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "./api";
 
-const initialState = {};
+const initialState = [{}];
 
 export const slice = createSlice({
     name: "events",
@@ -15,6 +15,10 @@ export const slice = createSlice({
             })
             .addMatcher(api.endpoints.isLoggedIn.matchFulfilled, (state, action) => {
                 console.log('fulfilled: isLoggedIn - events', action);
+                return action.payload.data.attributes.events.data.map(e => ({ id: e.id, ...e.attributes }))
+            })
+            .addMatcher(api.endpoints.signup.matchFulfilled, (state, action) => {
+                console.log('fulfilled: login - events', action.payload.data.attributes.events);
                 return action.payload.data.attributes.events.data.map(e => ({ id: e.id, ...e.attributes }))
             })
             .addMatcher(api.endpoints.fetchEvents.matchFulfilled, (state, action) => {

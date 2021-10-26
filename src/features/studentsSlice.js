@@ -13,6 +13,10 @@ export const slice = createSlice({
                 console.log('fulfilled: login - students', action);
                 return action.payload.data.attributes.students.data.map(s=> ({id: s.id, ...s.attributes})); 
             })
+            .addMatcher(api.endpoints.signup.matchFulfilled, (state, action) => {
+                console.log('fulfilled: login - students', action);
+                return action.payload.data.attributes.students.data.map(s=> ({id: s.id, ...s.attributes})); 
+            })
             .addMatcher(api.endpoints.isLoggedIn.matchFulfilled, (state, action) => {
                 console.log('fulfilled: isLoggedIn - student', action);
                 return action.payload.data.attributes.students.data.map(s=> ({id: s.id, ...s.attributes})); 

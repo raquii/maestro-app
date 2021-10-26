@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 import { Switch, Route, useRouteMatch } from "react-router-dom";
 import { Container, Paper, Grid } from '@mui/material';
@@ -68,6 +69,9 @@ export default function Calendar() {
     handleMenus('eventSummary')
   };
 
+  const handleDateClick = (e) => {
+    console.log(e)
+  }
   const { path, url } = useRouteMatch();
 
   return (
@@ -125,13 +129,14 @@ export default function Calendar() {
               <Paper sx={{ p: 2, height: 'auto' }}>
                 <div id='calendar'>
                   <FullCalendar
-                    plugins={[dayGridPlugin, timeGridPlugin]}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                     initialView={settings.initialView}
-                    weekends={false}
+                    weekends={settings.weekends}
                     ref={calendarRef}
                     events={eventsWithColors}
                     eventClick={handleEventClick}
                     nowIndicator={true}
+                    dateClick={handleDateClick}
                     slotMinTime={settings.slotMinTime}
                     slotMaxTime={settings.slotMaxTime}
                     eventColor="#ee7d68"

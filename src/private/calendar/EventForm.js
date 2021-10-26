@@ -31,7 +31,7 @@ import dayjs from "dayjs";
 import { RecurringEventModal } from "./RecurringEventModal";
 import PageHeader from "../components/PageHeader";
 import eventHelper from "../../util/eventHelper";
-import { useCreateEventMutation, useCreateRecurringEventMutation, useUpdateEventMutation } from "../../features/api";
+import { useCreateEventMutation, useCreateRecurringEventMutation, useUpdateEventMutation, useDeleteEventMutation} from "../../features/api";
 import ResponsiveGrid from "../components/ResponsiveGrid";
 
 
@@ -68,6 +68,7 @@ export default function EventForm({ event, defaultLesson = false }) {
     const [createEvent, { isLoading}] = useCreateEventMutation();
     const [createRecurringEvent] = useCreateRecurringEventMutation();
     const [updateEvent] = useUpdateEventMutation();
+    const [deleteEvent] = useDeleteEventMutation();
     const [inputValue, setInputValue] = useState('');
     const [recurringModal, setRecurringModal] = useState({
         open: false,
@@ -147,7 +148,8 @@ export default function EventForm({ event, defaultLesson = false }) {
                 eventObj: event
             })
         } else {
-            console.log("deleting event", event)
+           deleteEvent(event)
+           history.push('/calendar')
         }
     }
 

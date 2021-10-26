@@ -18,15 +18,17 @@ import { useUpdateStudentsMutation } from "../features/api";
 
 
 export default function Students() {
+    const match = useRouteMatch();
     const [updateStudents] = useUpdateStudentsMutation();
+
     const [search, setSearch] = useState("")
-    const [view, setView] = useState('')
+    const [view, setView] = useState("")
+    const [selection, setSelection] = useState([]);
     const [emailDialogue, setEmailDialogue] = useState({
         open: false,
         selectedStudents: false,
         selectedParents: false
     })
-    const [selection, setSelection] = useState([]);
     const [displayConfirmation, setDisplayConfirmation] = useState({
         noSelection: false,
         makeups: false,
@@ -34,7 +36,6 @@ export default function Students() {
         loginEmail: { display: false, to: "" }
     })
 
-    const match = useRouteMatch();
 
     function toggleShowEmail() {
         setEmailDialogue((state => ({
@@ -74,9 +75,9 @@ export default function Students() {
         }
     }
 
+    //TODO: make this more abstract to handle MUC updates
     async function handleStatusChange(newStatus) {
         const studentsToUpdate = { ids: selection.map(s => (s.id)), status: newStatus }
-        console.log(studentsToUpdate)
 
         if (selection.length === 0) {
             handleConfirmationDialogues()
@@ -86,7 +87,6 @@ export default function Students() {
             } catch (err) {
                 console.log(err)
             }
-
         }
     }
 
@@ -145,6 +145,7 @@ export default function Students() {
                                     setSearch={setSearch}
                                     view={view}
                                     setView={setView}
+                                    selection={selection}
                                     setEmailRecipients={setEmailDialogue}
                                     handleConfirmationDialogues={handleConfirmationDialogues}
                                     handleStatusChange={handleStatusChange}

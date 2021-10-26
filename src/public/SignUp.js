@@ -115,15 +115,18 @@ export default function SignUp() {
                                     }
                                 }
                             }
-
-                                signup(newUser)
-                                    .unwrap()
+                            try {
+                                await signup(newUser).unwrap()
                                     .then((data) => {
-                                        localStorage.setItem("token", data.token)
-                                        history.push('/dashboard')
+                                        setTimeout(() => {
+                                            localStorage.setItem("token", data.token)
+                                            history.push('/dashboard')
+                                        }, 1000);
                                     })
-                                    .catch(error => setResponseErrors([error.error]))
-
+                            } catch (error) {
+                                console.log(error.data)
+                                setResponseErrors([...error.data.errors])
+                            }
                         }}>
                         {({ errors, touched, values, handleSubmit }) => (
                             <Form autoComplete="off">

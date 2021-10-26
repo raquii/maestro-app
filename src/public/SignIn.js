@@ -20,11 +20,10 @@ import { useState } from 'react';
 export default function SignIn() {
     const history = useHistory();
     const [errors, setErrors] = useState("")
-    const [login, { isLoading }] = useLoginMutation();
+    const [login, { isLoading, isSuccess }] = useLoginMutation();
 
-    async function handleSubmit(e) {
+    function handleSubmit(e) {
         e.preventDefault();
-
         const data = new FormData(e.currentTarget);
         const signInObj = {
             user: {
@@ -32,19 +31,18 @@ export default function SignIn() {
                 password: data.get('password'),
             }
         }
+        
         localStorage.removeItem("token")
-        try {
-            await login(signInObj)
-                .unwrap()
-                .then(data => {
-                    localStorage.setItem("token", data.token)
-                    history.push('/dashboard')
-                })
-                .catch(error => setErrors(error.data.error))
 
-        } catch (error) {
-            console.log(error)
-        }
+        login(signInObj)
+        .unwrap()
+        .then(data => {
+            localStorage.setItem("token", data.token)
+            history.push('/dashboard')
+        })
+        .catch(error => setErrors(error.data.error))
+
+        
     }
 
     return (

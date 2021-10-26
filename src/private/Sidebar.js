@@ -121,13 +121,14 @@ export default function Sidebar() {
     const [logout] = useLogoutMutation();
     const history = useHistory();
 
-    const handleSignOut = async () =>{
-        try {
-            await logout()
+    const handleSignOut = () =>{
+        logout()
+        .unwrap()
+        .then(()=>{
+            localStorage.removeItem("token")
             history.push("/welcome")
-        } catch (error) {
-            console.log(error)
-        }
+        }) 
+       .catch((error)=>console.log(error))
     };
 
     return (

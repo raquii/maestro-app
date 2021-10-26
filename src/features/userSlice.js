@@ -8,7 +8,13 @@ const initialState = {
     phone: "",
     role: "",
     address: "",
-    id:""
+    id:"",
+    studioName:"",
+    studioId:"",
+    nextLesson:{
+        title: "",
+        start:"",
+    }
 };
 
 export const slice = createSlice({
@@ -38,6 +44,10 @@ export const slice = createSlice({
                 console.log('fulfilled-session recovered', action);
                 const { id, attributes:{ firstName, lastName, email, address, phone, role, studioId, studioName, nextLesson }} = action.payload.data;
                 Object.assign(state, { id, firstName, lastName, email, address, phone, role, studioId, studioName, nextLesson });
+            })
+            .addMatcher(api.endpoints.updateTeacherProfile.matchFulfilled, (state, action) => {
+                console.log('fulfilled-update teacher profile', action);
+                console.log(action.payload)
             })
             .addMatcher(api.endpoints.signup.matchFulfilled, (state, action) => {
                 console.log('fulfilled-signed up', action);

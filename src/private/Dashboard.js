@@ -8,13 +8,12 @@ import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid';
 import * as dayjs from 'dayjs';
 import PageHeader from "./components/PageHeader";
-import nextLessonHelper from "../util/nextLessonHelper";
+
 
 export default function Dashboard() {
     const user = useSelector(state => state.user);
     const settings = useSelector(state => state.settings.attributes);
     const events = useSelector(state => state.events);
-    const nextLesson = nextLessonHelper(events);
     const students = useSelector(state=>state.students);
     const activeStudentCount = students.filter(s=> s.status ==="active").length;
 
@@ -73,7 +72,7 @@ export default function Dashboard() {
                                 <MusicNoteIcon />
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography variant="button" color="initial">{user.studio.name}</Typography>
+                                <Typography variant="button" color="initial">{user.studioName}</Typography>
                             <Divider />
                             </Grid>
                             <Grid item xs={12}>
@@ -97,7 +96,7 @@ export default function Dashboard() {
                             <Divider />
                             </Grid>
                             <Grid item xs={12}>
-                            <Typography sx={{ mt: 1 }} variant="body2">{events.length>0 ? nextLesson.title: "No events to display."} <br /> {events.length>0 && dayjs(nextLesson.next).format('ddd, MMM D, YYYY h:mm A') }</Typography>
+                            <Typography sx={{ mt: 1 }} variant="body2">{user.nextLesson ? user.nextLesson.title: "No events to display."} <br /> {user.nextLesson && dayjs(user.nextLesson.start).format('ddd, MMM D, YYYY h:mm A') }</Typography>
                             </Grid>
                         </Grid>
                     </Paper>

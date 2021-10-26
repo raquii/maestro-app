@@ -1,5 +1,4 @@
 import { Button, AppBar, Toolbar, Typography, SvgIcon} from "@mui/material"
-import { border } from "@mui/system";
 import { Link } from "react-router-dom"
 import { ReactComponent as Logo } from '../motif.svg';
 
@@ -8,7 +7,6 @@ export default function Nav() {
 
         <AppBar
             position="static"
-
             elevation={0}
             sx={{ backgroundColor: "#8bb6b8", borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         >

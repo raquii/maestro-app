@@ -59,7 +59,7 @@ export default function EventTypes({ closeMenu, open }) {
                             Make-Up Lesson
                         </Grid>
                         <Grid item xs={6}>
-                            <input className="color-input" type='color' name="makeupUpLessonColor" id="makeupUpLessonColor" value={values.makeUpLessonColor} onChange={handleChange}/>
+                            <input className="color-input" type='color' name="makeUpLessonColor" id="makeUpLessonColor" value={values.makeUpLessonColor} onChange={handleChange}/>
                         </Grid>
 
                         <Grid item xs={12}>

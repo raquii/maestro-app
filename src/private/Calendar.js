@@ -25,7 +25,7 @@ export default function Calendar() {
     lesson: settings.lessonColor,
     group_lesson: settings.groupLessonColor,
     recital: settings.recitalColor,
-    mmake_up_lesson: settings.makeUpLessonColor,
+    make_up_lesson: settings.makeUpLessonColor,
     vacation: settings.vacationColor,
     birthday: settings.birthdayColor,
   };
@@ -141,6 +141,7 @@ export default function Calendar() {
                     slotMaxTime={settings.slotMaxTime}
                     eventColor="#ee7d68"
                     height='auto'
+                    
                   />
                 </div>
               </Paper>

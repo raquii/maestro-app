@@ -1,70 +1,78 @@
-# Getting Started with Create React App
+# Motif
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+__Motif__ is a studio management application for music teachers, students, and parents.
 
-## Available Scripts
+![Demo Gif](./public/motif.gif)
 
-In the project directory, you can run:
+*This is the front-end repo of this project The back-end source code can be found [here](https://github.com/raquii/motif-api)*
 
-### `npm start`
+## General Information
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+___
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Motif uses a React front-end with a Ruby on Rails back-end with Postgres for the database management.
 
-### `npm test`
+To see a demo of the application, see the [video walkthrough](https://youtu.be/0b08BDEyah8).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Features
 
-### `npm run build`
+* Add students to studio with various enrollment levels, from active to wait-listed
+* Create events from lessons, recitals, vacations, and student birthdays
+* Fully responsive web application for use on any device
+* Teachers can invite students and parents to become users with Devise-Invitable
+* Role-based authorization keeps each user viewing only what they should
+* Persistent app preferences, including event colors and default calendar views
+* Add both recurrent and non-recurrent events with ease
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Room for Improvement
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+🔲 Invoicing/Billing abilities
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+🔲 Student/Parent front-end
 
-### `npm run eject`
+🔲 Lesson Reminder Emails and SMS for students and parents
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+🔲 Refactor RTK logic to rely on built-in features of RTK Query auto-refetching
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+🔲 Recurrent date generation using rufus-scheduler
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+🔲 Password reset abilities
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## How to Use
 
-## Learn More
+___
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+While the app has not been deployed for public use, you may fork and clone the repo to run on your local machine. You will need [Node](https://nodejs.org/en/) installed to run the front-end:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. [Fork and clone](https://docs.github.com/en/get-started/quickstart/fork-a-repo) motif-app (this repo) onto your machine.
+2. Run `cd motif-app`
+3. Run `npm install`
+4. Run `npm start`
 
-### Code Splitting
+The application should be available in your browser at `http://localhost:4000`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+_In order to create an account and log-in, you will need to configure the back-end repository as well. **See below.**_
 
-### Analyzing the Bundle Size
+### Configure Back-end
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+You will need both [Ruby](https://www.ruby-lang.org/en/downloads/) and [Postgresql](https://www.postgresql.org/download/) to run the back-end
 
-### Making a Progressive Web App
+1. Fork and clone [motif-api](https://github.com/raquii/motif-api) onto your machine.
+2. Run `cd motif-api`
+3. Run `bundle install`
+4. If needed, start the PostgreSQL server on your machine. *This varies by OS-- please search the internet for the proper command for your machine and Postgres install.*
+5. Run `rails db:migrate` and `rails db:seed`
+6. Run `rails s`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+You may now log in as one of the example users in the seed file or create your own account from the client-side application.
 
-### Advanced Configuration
+## Resources
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+___
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Built with React.js using [CreateReactApp](https://create-react-app.dev/)
+* [Redux Toolkit + RTK Query](https://redux-toolkit.js.org/)
+* [FullCalendar](https://fullcalendar.io/)
+* [Material-UI](https://mui.com/)
+* [Draft.js](https://draftjs.org/)
+* [React Router](https://github.com/remix-run/react-router)
